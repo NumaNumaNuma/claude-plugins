@@ -57,7 +57,17 @@ Review the feature description and decide which of these agents to activate. **Y
 
 4. **Devil's Advocate pass**: Resume the Devil's Advocate agent with the synthesis for a final challenge. Address every objection — either incorporate it or explain why it's dismissed.
 
-5. **Create sprint directory**: Save the plan to the project's planning directory:
+5. **Edge case sweep**: Review the plan yourself with fresh eyes and specifically hunt for missed edge cases. For each component in the plan, ask:
+   - What happens on first use? (empty states, no data, new user)
+   - What happens at scale? (1000+ items, concurrent users, large payloads)
+   - What happens on failure? (network down, timeout, partial write, auth expired)
+   - What happens with bad input? (empty strings, nulls, duplicates, special characters)
+   - What happens out of order? (race conditions, double-taps, stale data, back navigation)
+   - What happens on different devices/contexts? (small screens, offline, background/foreground transitions)
+
+   Add any newly discovered edge cases to the plan. If an edge case would require a new task, add it. If it's a risk, add it to the risks table.
+
+6. **Create sprint directory**: Save the plan to the project's planning directory:
    ```
    planning/sprints/sprint-N-name/
    ├── plan.md         — Copy from templates/sprint-plan.md, fill in architecture decisions
@@ -67,7 +77,7 @@ Review the feature description and decide which of these agents to activate. **Y
    ```
    Use the templates from this plugin's `templates/` directory as starting points.
 
-6. **Final plan**: Present the consolidated implementation plan with:
+7. **Final plan**: Present the consolidated implementation plan with:
    - Architecture decisions (with rationale)
    - Files to create/modify
    - Database changes (if any)
