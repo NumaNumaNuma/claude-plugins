@@ -1,0 +1,11 @@
+{
+  "name": "lean-docs",
+  "version": "1.0.0",
+  "description": "Set up agent-legible documentation for any codebase: slim CLAUDE.md, hierarchical docs, subdirectory rules, lint-as-taste, and doc gardening",
+  "author": {
+    "name": "NumaNumaNuma"
+  },
+  "repository": "https://github.com/NumaNumaNuma/claude-plugins",
+  "license": "MIT",
+  "keywords": ["documentation", "claude-md", "agent-legible", "harness-engineering"]
+}

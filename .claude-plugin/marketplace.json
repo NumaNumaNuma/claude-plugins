@@ -12,6 +12,11 @@
       "name": "dream-team",
       "source": "./dream-team",
       "description": "Multi-agent collaborative workflow for planning, implementing, and reviewing features with autonomous sprint execution"
+    },
+    {
+      "name": "lean-docs",
+      "source": "./lean-docs",
+      "description": "Set up agent-legible documentation for any codebase: slim CLAUDE.md, hierarchical docs, subdirectory rules, and lint-as-taste"
     }
   ]
 }
