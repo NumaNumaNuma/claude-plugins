@@ -2,9 +2,35 @@
 
 Makes codebases agent-legible through structured documentation hierarchy.
 
-## Core Principle
+## When Writing or Updating Documentation
 
-A single large CLAUDE.md becomes a context hog. Agents work better with a short stable entry point (~100 lines) that links to deeper docs on demand. Think table of contents, not encyclopedia.
+Follow these rules whenever you create, update, or reorganize documentation — even if the user doesn't explicitly mention lean-docs. These apply any time someone says "document this", "add docs", "update the docs", etc.
+
+### Where to put things
+
+- **CLAUDE.md is an index, not an encyclopedia.** Keep it at 80-120 lines. It holds build commands, key rules, and a docs index table. Nothing else.
+- **Deep content goes in `docs/`**. If a section is >15 lines and only relevant to some tasks, it belongs in a topic file under `docs/`, not in CLAUDE.md.
+- **Directory-specific rules go in subdirectory CLAUDE.md files.** Create a 10-30 line CLAUDE.md in each major source directory (services, components, models, utils). Focus on what NOT to do and patterns to follow.
+- **Don't create new top-level docs.** If a `docs/` directory already exists, add to the existing structure. Match existing file naming and style.
+
+### How to write docs
+
+- **Link, don't duplicate.** If the information already exists in another doc, link to it. Never copy content between files.
+- **Keep doc files under 400 lines.** Split into focused sub-files beyond that.
+- **Don't over-document.** If a doc file would be <10 lines, merge it into a related neighbor.
+- **Reference docs are curated, not comprehensive.** Only document SDK patterns the project actually uses. ~200-300 lines max per reference file.
+- **Use tables for indexes and lists.** Tables scan faster than bullet lists for both agents and humans.
+
+### When updating CLAUDE.md
+
+- **Add a docs index entry** if you created a new file in `docs/`. Use the existing table format.
+- **Move, don't grow.** If your change would push CLAUDE.md over 120 lines, extract the new content to a doc file and add an index entry instead.
+- **List subdirectory CLAUDE.md files** if you created a new one.
+
+### Gotchas and lessons learned
+
+- Put hard-won debugging lessons in `docs/gotchas.md` (or create it if it doesn't exist).
+- Each entry should be actionable: what went wrong, why, and what to do instead.
 
 ## Documentation Hierarchy
 
@@ -28,11 +54,8 @@ src/services/CLAUDE.md       → 10-30 lines, directory-specific rules
 src/components/CLAUDE.md     → 10-30 lines, directory-specific rules
 ```
 
-## Key Rules
+Not every project needs all of these. Create files as they become relevant — don't scaffold empty docs.
 
-- **If a CLAUDE.md section is >15 lines and only relevant to some tasks, move it to docs/**
-- **Subdirectory CLAUDE.md files**: 10-30 lines each, focus on what NOT to do and patterns to follow
-- **Reference docs are curated, not comprehensive**: Only document what your project actually uses (~200-300 lines per file)
-- **Don't over-document**: If a doc file is <10 lines, merge it into a neighbor
-- **GC monthly**: Stale docs are worse than no docs
-- **Encode taste as lint rules**: If a pattern matters, make it a lint rule with an agent-friendly error message
+## Setup & Audit
+
+Run `/lean-docs` to set up this structure for a new project, or `/lean-docs audit` to check an existing project against the playbook.
