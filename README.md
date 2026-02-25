@@ -15,7 +15,15 @@ Custom Claude Code plugins for agent-first development workflows.
 
 ## Setup
 
-**dream-team** requires the "Agent teams" setting to be enabled: run `/config` in Claude Code and enable **Agent teams** (or set `"agentTeams": true` in your settings JSON).
+**dream-team** requires the experimental agent teams feature. Add to `~/.claude/settings.json`:
+
+```json
+{
+  "env": {
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
+  }
+}
+```
 
 ## Plugins
 

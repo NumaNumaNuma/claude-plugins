@@ -22,11 +22,15 @@ claude --plugin-dir /path/to/claude-plugins/dream-team
 
 ## Required Setup
 
-**Enable multi-agent support** — Dream Team launches multiple subagents in parallel, which requires the "Agent teams" setting to be enabled manually:
+**Enable agent teams** — Dream Team launches multiple subagents in parallel, which requires the experimental agent teams feature. Add this to your `~/.claude/settings.json`:
 
-1. Open Claude Code
-2. Run `/config`
-3. Enable **Agent teams** (or set `"agentTeams": true` in your settings JSON)
+```json
+{
+  "env": {
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
+  }
+}
+```
 
 Without this, the Task tool won't be able to launch subagents and the commands will fail.
 
