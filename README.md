@@ -13,6 +13,10 @@ Custom Claude Code plugins for agent-first development workflows.
 /plugin install lean-docs@numa-plugins
 ```
 
+## Setup
+
+**dream-team** requires the "Agent teams" setting to be enabled: run `/config` in Claude Code and enable **Agent teams** (or set `"agentTeams": true` in your settings JSON).
+
 ## Plugins
 
 ### dream-team

@@ -20,6 +20,16 @@ claude plugin install dream-team@numa-plugins
 claude --plugin-dir /path/to/claude-plugins/dream-team
 ```
 
+## Required Setup
+
+**Enable multi-agent support** — Dream Team launches multiple subagents in parallel, which requires the "Agent teams" setting to be enabled manually:
+
+1. Open Claude Code
+2. Run `/config`
+3. Enable **Agent teams** (or set `"agentTeams": true` in your settings JSON)
+
+Without this, the Task tool won't be able to launch subagents and the commands will fail.
+
 ## Recommended Companion Plugins
 
 For best results, install these official Anthropic plugins:
