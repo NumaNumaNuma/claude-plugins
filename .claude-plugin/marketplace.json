@@ -1,0 +1,17 @@
+{
+  "name": "numa-plugins",
+  "owner": {
+    "name": "NumaNumaNuma"
+  },
+  "metadata": {
+    "description": "Custom Claude Code plugins",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "dream-team",
+      "source": "./dream-team",
+      "description": "Multi-agent collaborative workflow for planning, implementing, and reviewing features with autonomous sprint execution"
+    }
+  ]
+}

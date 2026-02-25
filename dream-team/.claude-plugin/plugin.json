@@ -1,0 +1,11 @@
+{
+  "name": "dream-team",
+  "version": "1.0.0",
+  "description": "Multi-agent collaborative workflow for planning, implementing, and reviewing features with autonomous sprint execution",
+  "author": {
+    "name": "NumaNumaNuma"
+  },
+  "repository": "https://github.com/NumaNumaNuma/claude-plugins",
+  "license": "MIT",
+  "keywords": ["multi-agent", "planning", "sprint", "review", "autonomous"]
+}
