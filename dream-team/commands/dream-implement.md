@@ -85,7 +85,7 @@ Review the feature description and decide which of these agents to activate. **Y
    - Explicit instruction: "Review only. Flag issues with file paths and line numbers."
    - "Report only your findings. No preamble, no summaries of what you checked, no restating the task."
 
-7. **Address findings**: Fix any issues flagged by the review agents. For disagreements between agents, use your judgment and note the trade-off.
+7. **Address findings**: Fix any issues flagged by the review agents. For disagreements between agents, use your judgment and note the trade-off. If any fix involved a non-obvious cause, record it in `docs/gotchas.md`.
 
 ### Phase 4: Test Verification
 

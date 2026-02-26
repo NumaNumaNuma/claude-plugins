@@ -27,10 +27,26 @@ Follow these rules whenever you create, update, or reorganize documentation — 
 - **Move, don't grow.** If your change would push CLAUDE.md over 120 lines, extract the new content to a doc file and add an index entry instead.
 - **List subdirectory CLAUDE.md files** if you created a new one.
 
-### Gotchas and lessons learned
+### Recording learnings
 
-- Put hard-won debugging lessons in `docs/gotchas.md` (or create it if it doesn't exist).
-- Each entry should be actionable: what went wrong, why, and what to do instead.
+When you encounter and fix an unexpected issue — a surprising API behavior, a non-obvious configuration requirement, a debugging dead end, a fix that took multiple attempts — record it in `docs/gotchas.md`. This applies during any task, not just documentation tasks.
+
+**When to record**: Only when the issue was genuinely surprising or non-obvious. Don't record routine fixes like typos, missing imports, or standard error handling. The bar is: "would a future agent waste time on this same problem?"
+
+**Format** — one entry per issue, strict structure:
+
+```markdown
+## [Short title]
+**Symptom**: What you observed (error message, unexpected behavior)
+**Cause**: Why it happened
+**Fix**: What to do instead
+```
+
+**Keeping it lean**:
+- Check if the lesson already exists before adding. Don't duplicate.
+- Max 30 entries. When you'd exceed 30, scan for entries that are now covered by updated docs, fixed upstream, or no longer relevant, and remove them.
+- If multiple entries share a theme (e.g., 3 entries about the same SDK), merge them into one.
+- Entries about issues fixed in dependency updates should be removed once the project upgrades past that version.
 
 ## Documentation Hierarchy
 
