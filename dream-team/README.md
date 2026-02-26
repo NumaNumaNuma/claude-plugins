@@ -79,9 +79,10 @@ For hands-off execution of sprint tasks:
 ./scripts/run-task.sh planning/sprints/sprint-5-feature-name --max-iterations 20
 ./scripts/run-task.sh planning/sprints/sprint-5-feature-name --dry-run
 ./scripts/run-task.sh planning/sprints/sprint-5-feature-name --model opus
+./scripts/run-task.sh planning/sprints/sprint-5-feature-name --quiet
 ```
 
-The runner reads the checkpoint from `progress.md`, launches Claude with fresh context each iteration, and loops until the sprint is complete or blocked.
+The runner streams Claude's output to the terminal in real-time so you can follow progress. Logs are also saved to `runner-logs/`. Use `--quiet` to suppress terminal output and only write to log files (old behavior).
 
 ## Sprint Templates
 

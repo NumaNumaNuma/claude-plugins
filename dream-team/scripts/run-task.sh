@@ -7,6 +7,7 @@
 #   ./scripts/run-task.sh planning/sprints/sprint-5-feature-name --max-iterations 10
 #   ./scripts/run-task.sh planning/sprints/sprint-5-feature-name --dry-run
 #   ./scripts/run-task.sh planning/sprints/sprint-5-feature-name --model opus
+#   ./scripts/run-task.sh planning/sprints/sprint-5-feature-name --quiet
 
 set -euo pipefail
 
@@ -17,6 +18,7 @@ SPRINT_DIR="${1:?Usage: run-task.sh <sprint-dir> [--max-iterations N] [--dry-run
 MAX_ITERATIONS=50
 DRY_RUN=false
 MODEL=""
+QUIET=false
 
 shift
 while [[ $# -gt 0 ]]; do
@@ -24,6 +26,7 @@ while [[ $# -gt 0 ]]; do
     --max-iterations) MAX_ITERATIONS="$2"; shift 2 ;;
     --dry-run) DRY_RUN=true; shift ;;
     --model) MODEL="$2"; shift 2 ;;
+    --quiet) QUIET=true; shift ;;
     *) echo "Unknown option: $1"; exit 1 ;;
   esac
 done
@@ -202,8 +205,12 @@ Before setting phase to 'done', append a '## Manual Testing Checklist' section t
   fi
 
   set +e
-  claude --print --dangerously-skip-permissions $MODEL_FLAG "$PROMPT" > "$ITER_LOG" 2>&1
-  EXIT_CODE=$?
+  if $QUIET; then
+    claude --print --dangerously-skip-permissions $MODEL_FLAG "$PROMPT" > "$ITER_LOG" 2>&1
+  else
+    claude --print --dangerously-skip-permissions $MODEL_FLAG "$PROMPT" 2>&1 | tee "$ITER_LOG"
+  fi
+  EXIT_CODE=${PIPESTATUS[0]}
   set -e
 
   if [[ $EXIT_CODE -ne 0 ]]; then
