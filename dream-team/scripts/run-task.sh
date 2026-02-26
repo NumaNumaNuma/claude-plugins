@@ -181,7 +181,7 @@ IMPORTANT:
 - NEVER mark a task as done ([x]) if the build is broken or tests are failing
 - If a test fails, try to fix it. If you can't fix it after a solid attempt, checkpoint with next_step describing the failure and what you tried — a fresh context in the next iteration may help
 - Keep files_modified accurate — list every file you created or modified this session
-- RECORD LEARNINGS: If you hit a non-obvious issue (surprising API behavior, config gotcha, debugging dead end), add it to docs/gotchas.md using the format: ## Title / Symptom / Cause / Fix. Check for duplicates first. Keep the file under 30 entries by pruning stale ones.
+- RECORD LEARNINGS: If you hit a non-obvious issue (surprising API behavior, config gotcha, debugging dead end), add it to docs/gotchas.md (or the relevant topic file under docs/gotchas/ if the project uses split gotchas). Format: ## Title / Symptom / Cause / Fix. Check for duplicates first.
 
 WHEN SETTING PHASE TO DONE:
 Before setting phase to 'done', append a '## Manual Testing Checklist' section to the progress log. Scan tasks.md for ALL items that could not be verified automatically (device testing, multi-device sync, UI interactions, visual checks, etc.) and list them as a complete, actionable checklist. Include specific steps to reproduce, not just feature names. This is the handoff to the human tester."

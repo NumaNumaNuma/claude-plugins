@@ -44,9 +44,31 @@ When you encounter and fix an unexpected issue — a surprising API behavior, a 
 
 **Keeping it lean**:
 - Check if the lesson already exists before adding. Don't duplicate.
-- Max 30 entries. When you'd exceed 30, scan for entries that are now covered by updated docs, fixed upstream, or no longer relevant, and remove them.
-- If multiple entries share a theme (e.g., 3 entries about the same SDK), merge them into one.
-- Entries about issues fixed in dependency updates should be removed once the project upgrades past that version.
+- Remove entries about issues fixed in dependency updates once the project upgrades past that version.
+- **When `docs/gotchas.md` grows beyond ~30 entries**, split into topic files under `docs/gotchas/` and turn `docs/gotchas.md` into a slim index:
+
+```
+docs/
+  gotchas.md                → Index with one-line summaries linking to topic files
+  gotchas/
+    database.md             → Database/query/migration gotchas
+    auth.md                 → Auth and permissions gotchas
+    sdk-quirks.md           → Third-party SDK surprises
+    build-deploy.md         → Build, CI, deployment gotchas
+```
+
+The index format:
+
+```markdown
+# Gotchas
+
+| Topic | Key lessons |
+|-------|-------------|
+| [Database](gotchas/database.md) | Partial writes on timeout, migration ordering |
+| [Auth](gotchas/auth.md) | Token refresh race, session expiry edge case |
+```
+
+This way the agent scans the index to find the right topic file, then reads only that file. Same hierarchy principle as CLAUDE.md → docs/.
 
 ## Documentation Hierarchy
 
