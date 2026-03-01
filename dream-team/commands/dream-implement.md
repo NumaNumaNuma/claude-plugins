@@ -25,26 +25,21 @@ Review the feature description and decide which of these agents to activate. **Y
 1. **Code Architect** — **Almost always relevant.** Designs the implementation blueprint: files to create/modify, component boundaries, data flow, and build sequence. Skip only for trivial changes.
    - Use `feature-dev:code-architect` if available. If the Task tool returns an error about an unknown agent type, retry with `general-purpose` using this prompt: "You are a senior software architect. Design the implementation blueprint: files to create/modify, component boundaries, data flow, and build sequence. Read relevant existing code, docs, and CLAUDE.md files."
 
-2. **Code Quality Engineer** — Relevant when the feature touches existing code patterns, introduces new abstractions, or could create duplication.
-   - Use `feature-dev:code-reviewer` if available. Fallback prompt: "You are a code quality engineer. Review implementation for DRY/KISS/YAGNI violations, module boundaries, and reuse. Check adherence to project conventions."
-
-3. **Performance Analyst** — Relevant when the feature involves data fetching, list rendering, real-time updates, caching, or anything with scaling concerns.
+2. **Performance Analyst** — Relevant when the feature involves data fetching, list rendering, real-time updates, caching, or anything with scaling concerns.
    - Use `feature-dev:code-explorer` if available. Fallback prompt: "You are a performance analyst. Analyze the implementation for algorithmic complexity, memory usage, network calls, and bottlenecks."
 
-4. **Security Reviewer** — Relevant when the feature involves auth, user data, API calls, user input, or permissions.
+3. **Security Reviewer** — Relevant when the feature involves auth, user data, API calls, user input, or permissions.
    - Use `pr-review-toolkit:silent-failure-hunter` if available. Fallback prompt: "You are a security reviewer. Check for OWASP top 10 vulnerabilities, auth issues, data exposure, silent failures, and inadequate error handling."
 
-5. **UI/UX Designer** (`general-purpose`) — Relevant when the feature has user-facing components, interactions, navigation changes, or accessibility implications. Skip for purely backend/infrastructure work.
+4. **UI/UX Designer** (`general-purpose`) — Relevant when the feature has user-facing components, interactions, navigation changes, or accessibility implications. Skip for purely backend/infrastructure work.
 
-6. **Devil's Advocate** (`general-purpose`) — **Always include.** Challenges assumptions, proposes alternatives, identifies edge cases and failure modes. Non-negotiable.
+5. **Devil's Advocate** (`general-purpose`) — **Always include.** Challenges assumptions, proposes alternatives, identifies edge cases and failure modes. Non-negotiable.
 
 ### Optional (include only when clearly needed)
 
-7. **Database Architect** (`general-purpose`) — Include when the feature requires new tables, columns, access policies, triggers, or DB functions.
+6. **Database Architect** (`general-purpose`) — Include when the feature requires new tables, columns, access policies, triggers, or DB functions.
 
-8. **Documentalist** (`general-purpose`) — Include when the feature is complex enough to warrant documentation updates or lessons learned capture.
-
-9. **Test Engineer** (`general-purpose`) — Include when the plan identifies new tests are needed or when existing tests will be affected by the changes. Skip only for trivial changes with no testable logic.
+7. **Test Engineer** (`general-purpose`) — Include when the sprint plan includes testable features. Writes the tests identified during planning, verifies coverage. Skip only for trivial changes with no testable logic.
 
 ## Workflow
 
@@ -77,7 +72,9 @@ Review the feature description and decide which of these agents to activate. **Y
 
 ### Phase 3: Post-Implementation Review
 
-6. **Launch review agents in parallel**: After implementation is complete, launch the relevant review agents (Quality Engineer, Security Reviewer, Performance Analyst, Devil's Advocate) with `run_in_background: true` to review what was built.
+6. **Run `/simplify`**: Before launching review agents, invoke the `/simplify` skill on the changed code. This automatically reviews and fixes reuse, quality, and efficiency issues — so review agents focus on real problems rather than style nits.
+
+7. **Launch review agents in parallel**: After `/simplify` is done, launch the relevant review agents (Security Reviewer, Performance Analyst, Devil's Advocate) with `run_in_background: true` to review what was built.
 
    Each review agent prompt must include:
    - The feature description: "$ARGUMENTS"
@@ -85,15 +82,21 @@ Review the feature description and decide which of these agents to activate. **Y
    - Explicit instruction: "Review only. Flag issues with file paths and line numbers."
    - "Report only your findings. No preamble, no summaries of what you checked, no restating the task."
 
-7. **Address findings**: Fix any issues flagged by the review agents. For disagreements between agents, use your judgment and note the trade-off. If any fix involved a non-obvious cause, record it in `docs/gotchas.md`.
+8. **Address findings**: Fix any issues flagged by the review agents. For disagreements between agents, use your judgment and note the trade-off.
 
 ### Phase 4: Test Verification
 
-8. **Run existing tests**: Build the project and run the existing test suite using the project's build system. If any tests fail due to the changes, fix them before proceeding. This is non-negotiable — broken tests mean the implementation is incomplete.
+9. **Run existing tests**: Build the project and run the existing test suite using the project's build system. If any tests fail due to the changes, fix them before proceeding. This is non-negotiable — broken tests mean the implementation is incomplete.
 
-9. **Write new tests**: If the Test Engineer was activated (step 1), write the new tests identified during planning.
+10. **Write new tests**: If the sprint plan includes a test plan, write the new tests identified during planning.
 
-10. **Final summary**: Present what was built, any trade-offs made, and any remaining open items. Update `progress.md` with final state.
+### Phase 5: Documentation Sweep
+
+Run this phase AFTER review fixes and tests — not before. Review fixes often surface edge cases, gotchas, and non-obvious behavior that are the most valuable things to document.
+
+11. **Run `/lean-docs`**: Invoke the `/lean-docs` skill to audit and update project documentation. This covers `docs/`, subdirectory `CLAUDE.md` files, and `docs/gotchas.md`. It will identify stale or missing documentation based on what changed.
+
+12. **Final summary**: Present what was built, any trade-offs made, and any remaining open items. Update `progress.md` with final state.
 
 ## Bug Fix Phase (when active_task contains 'Bug Fix' or 'BF-')
 

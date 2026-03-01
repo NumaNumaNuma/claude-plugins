@@ -12,7 +12,7 @@ When the user says "dream team" (e.g., "dream team review this", "dream team pla
 
 ## Agent Selection Strategy
 
-4 of the 9 agents map to official Anthropic plugin agents:
+The team has 6 core agents + the `/simplify` skill for code quality:
 
 | Dream Team Role | Preferred Agent | Fallback |
 |---|---|---|
@@ -21,9 +21,22 @@ When the user says "dream team" (e.g., "dream team review this", "dream team pla
 | Performance Analyst | `feature-dev:code-explorer` | `general-purpose` with performance prompt |
 | Security Reviewer | `pr-review-toolkit:silent-failure-hunter` | `general-purpose` with security prompt |
 
-The remaining 5 are always `general-purpose`: UI/UX Designer, Devil's Advocate, Database Architect, Documentalist, Test Engineer.
+The remaining 3 are always `general-purpose`: UI/UX Designer, Devil's Advocate, Test Engineer. Database Architect is an optional `general-purpose` agent included when needed.
+
+**Code Quality Engineer is planning-only.** During implementation and review, the `/simplify` skill replaces it — `/simplify` auto-fixes reuse, quality, and efficiency issues in changed code, which is more effective than review-only feedback.
+
+**Test Engineer** is included in planning (coverage strategy) and implementation (writes tests). During review, the built-in `pr-review-toolkit:pr-test-analyzer` handles test coverage analysis instead.
+
+**On-demand built-in agents** (not part of the core team, invoked when relevant):
+- `pr-review-toolkit:type-design-analyzer` — type/model design review
+- `pr-review-toolkit:comment-analyzer` — comment accuracy review
+- `pr-review-toolkit:pr-test-analyzer` — test coverage analysis (used in review phase)
 
 If a preferred agent type returns an error about an unknown agent type, retry with `general-purpose` using the specialist prompt from the command file.
+
+## Pre-Commit Documentation Rule
+
+**Before any `git commit` or `git push`, always run `/lean-docs` first.** This is non-negotiable — even if the user forgets and says "commit this" or "push it", run the docs pass before executing the git command. This ensures documentation always reflects the final state of the code, including edge cases and gotchas discovered during review fixes.
 
 ## Context Budget Rules
 

@@ -16,14 +16,14 @@ Review the feature description and decide which of these agents to activate. **Y
 1. **Code Architect** — **Almost always relevant.** Analyzes architecture, patterns, data flow, component design. Proposes the high-level approach and identifies files/modules affected. Skip only for trivial changes.
    - Use `feature-dev:code-architect` if available. If the Task tool returns an error about an unknown agent type, retry with `general-purpose` using this prompt: "You are a senior software architect. Analyze the codebase architecture, patterns, data flow, and component design. Propose the high-level approach and identify files/modules affected. Read relevant existing code, docs, and CLAUDE.md files before making recommendations."
 
-2. **Code Quality Engineer** — Relevant when the feature touches existing code patterns, introduces new abstractions, or could create duplication. Evaluates DRY/KISS/YAGNI, module boundaries, and reuse.
+2. **Code Quality Engineer** — Relevant when the feature touches existing code patterns, introduces new abstractions, or could create duplication. Evaluates DRY/KISS/YAGNI, module boundaries, and reuse. Important during planning because `/simplify` can't catch design-level quality issues before code exists.
    - Use `feature-dev:code-reviewer` if available. Fallback prompt: "You are a code quality engineer. Evaluate the proposed changes for DRY/KISS/YAGNI violations, abstraction levels, module boundaries, decoupling, and consistency with existing patterns. Read the codebase conventions before analyzing."
 
 3. **Performance Analyst** — Relevant when the feature involves data fetching, list rendering, real-time updates, caching, or anything with scaling concerns. Skip for purely cosmetic UI changes.
    - Use `feature-dev:code-explorer` if available. Fallback prompt: "You are a performance analyst. Analyze algorithmic complexity, memory usage, network calls, and potential bottlenecks. Identify scaling concerns and propose optimizations."
 
 4. **Security Reviewer** — Relevant when the feature involves auth, user data, API calls, user input, or permissions. Skip for internal refactors with no security surface.
-   - Use `pr-review-toolkit:silent-failure-hunter` if available. Also launch `feature-dev:code-reviewer` focused on security. Fallback prompt: "You are a security reviewer. Check for OWASP top 10 vulnerabilities, auth issues, data exposure, silent failures, and inadequate error handling. Focus on security boundaries and trust assumptions."
+   - Use `pr-review-toolkit:silent-failure-hunter` if available. Fallback prompt: "You are a security reviewer. Check for OWASP top 10 vulnerabilities, auth issues, data exposure, silent failures, and inadequate error handling. Focus on security boundaries and trust assumptions."
 
 5. **UI/UX Designer** (`general-purpose`) — Relevant when the feature has user-facing components, interactions, navigation changes, or accessibility implications. Skip for purely backend/infrastructure work.
 
@@ -33,9 +33,7 @@ Review the feature description and decide which of these agents to activate. **Y
 
 7. **Database Architect** (`general-purpose`) — Include when the feature requires new tables, columns, access policies, triggers, or DB functions.
 
-8. **Documentalist** (`general-purpose`) — Include when the feature is complex enough to warrant documentation updates or lessons learned capture.
-
-9. **Test Engineer** (`general-purpose`) — Include when the plan identifies new tests are needed or when the feature will affect existing tests. Plans what tests to write/update, identifies affected test files, and specifies expected behavior. Skip only for trivial changes with no testable logic.
+8. **Test Engineer** (`general-purpose`) — Include when the feature has testable logic. Plans what tests to write, identifies affected test files, and specifies expected behavior and coverage strategy. Skip only for trivial changes with no testable logic.
 
 ## Workflow
 
