@@ -3,18 +3,17 @@
 # Reads checkpoint from sprint progress.md, runs Claude with fresh context each iteration.
 #
 # Usage:
-#   ./scripts/run-task.sh planning/sprints/sprint-5-feature-name
-#   ./scripts/run-task.sh planning/sprints/sprint-5-feature-name --max-iterations 10
-#   ./scripts/run-task.sh planning/sprints/sprint-5-feature-name --dry-run
-#   ./scripts/run-task.sh planning/sprints/sprint-5-feature-name --model opus
-#   ./scripts/run-task.sh planning/sprints/sprint-5-feature-name --quiet
+#   ./scripts/run-task.sh <sprint-dir> [--max-iterations N] [--dry-run] [--model MODEL] [--quiet]
+#   ./scripts/run-task.sh planning/sprints/sprint-7-broadcast-migration
+#   ./scripts/run-task.sh planning/sprints/sprint-7-broadcast-migration --max-iterations 10
+#   ./scripts/run-task.sh planning/sprints/sprint-7-broadcast-migration --dry-run
 
 set -euo pipefail
 
 # ---------------------------------------------------------------------------
 # Args
 # ---------------------------------------------------------------------------
-SPRINT_DIR="${1:?Usage: run-task.sh <sprint-dir> [--max-iterations N] [--dry-run] [--model MODEL]}"
+SPRINT_DIR="${1:?Usage: run-task.sh <sprint-dir> [--max-iterations N] [--dry-run]}"
 MAX_ITERATIONS=50
 DRY_RUN=false
 MODEL=""
@@ -40,7 +39,7 @@ PLAN_FILE="$SPRINT_DIR/plan.md"
 LOG_DIR="$SPRINT_DIR/runner-logs"
 
 if [[ ! -f "$PROGRESS_FILE" ]]; then
-  echo "ERROR: $PROGRESS_FILE not found. Create it from the dream-team plugin templates/progress.md"
+  echo "ERROR: $PROGRESS_FILE not found. Create it from planning/templates/progress.md"
   exit 1
 fi
 
@@ -108,6 +107,29 @@ while [[ $ITERATION -lt $MAX_ITERATIONS ]]; do
   echo "Next step: $NEXT_STEP"
   echo ""
 
+  # Dry run — test the Claude pipe and exit (bypass phase checks)
+  if $DRY_RUN; then
+    SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    FILTER="$SCRIPT_DIR/stream-filter.sh"
+    CLAUDE_ARGS=(
+      --print
+      --verbose
+      --output-format stream-json
+      --dangerously-skip-permissions
+      --disallowedTools "AskUserQuestion"
+    )
+    if [[ -n "$MODEL" ]]; then
+      CLAUDE_ARGS+=(--model "$MODEL")
+    fi
+    echo "[DRY RUN] Testing Claude pipe with hello prompt..."
+    DRY_LOG="$LOG_DIR/dry-run.log"
+    > "$DRY_LOG"
+    claude "${CLAUDE_ARGS[@]}" <<< "Say 'Hello from dry run!' and stop." 2>&1 | "$FILTER" "$DRY_LOG"
+    echo ""
+    echo "[DRY RUN] Done. Log: $DRY_LOG"
+    exit 0
+  fi
+
   # Check if done
   if [[ "$PHASE" == "done" ]]; then
     echo "============================================"
@@ -132,6 +154,16 @@ while [[ $ITERATION -lt $MAX_ITERATIONS ]]; do
     exit 2
   fi
 
+  # Check if awaiting manual testing
+  if [[ "$PHASE" == "awaiting-manual-testing" ]]; then
+    echo "============================================"
+    echo "  Sprint awaiting manual device testing."
+    echo "  Add bugs to the Bug Fix Phase in tasks.md,"
+    echo "  then set phase to 'bug-fix' to continue."
+    echo "============================================"
+    exit 0
+  fi
+
   # Build the prompt
   PROMPT="You are continuing work on Sprint $SPRINT_NUM ($SPRINT_NAME).
 
@@ -150,7 +182,7 @@ YOUR INSTRUCTIONS:
 1. Read the plan and tasks files to understand the full context
 2. Execute the 'next_step' described above
 3. VERIFY your work:
-   a. If you wrote code: build it using the project's build system and fix any compile errors before moving on
+   a. If you wrote code: build it and fix any compile errors before moving on
    b. If tests exist for what you changed: run them and fix failures
    c. If the task has acceptance criteria: verify each one is met
    d. If you can't verify (e.g., needs device testing), note it in the progress log
@@ -162,7 +194,7 @@ YOUR INSTRUCTIONS:
    Checkpoint after each task so progress is saved, but keep working in the same session.
 6. If you complete the entire sprint, do a FINAL VERIFICATION:
    a. Run the full test suite
-   b. Build the project
+   b. Build the app
    c. Only set phase to 'done' if everything passes
    d. If tests fail, set next_step to describe what needs fixing
 7. If you hit a blocker you can't resolve, set phase to 'blocked' and describe the blocker
@@ -184,31 +216,32 @@ IMPORTANT:
 - NEVER mark a task as done ([x]) if the build is broken or tests are failing
 - If a test fails, try to fix it. If you can't fix it after a solid attempt, checkpoint with next_step describing the failure and what you tried — a fresh context in the next iteration may help
 - Keep files_modified accurate — list every file you created or modified this session
-- RECORD LEARNINGS: If you hit a non-obvious issue (surprising API behavior, config gotcha, debugging dead end), add it to docs/gotchas.md (or the relevant topic file under docs/gotchas/ if the project uses split gotchas). Format: ## Title / Symptom / Cause / Fix. Check for duplicates first.
 
 WHEN SETTING PHASE TO DONE:
 Before setting phase to 'done', append a '## Manual Testing Checklist' section to the progress log. Scan tasks.md for ALL items that could not be verified automatically (device testing, multi-device sync, UI interactions, visual checks, etc.) and list them as a complete, actionable checklist. Include specific steps to reproduce, not just feature names. This is the handoff to the human tester."
 
-  if $DRY_RUN; then
-    echo "[DRY RUN] Would send prompt:"
-    echo "$PROMPT"
-    echo ""
-    echo "[DRY RUN] Exiting after first iteration."
-    exit 0
-  fi
-
   # Run Claude Code
   echo "Running Claude Code... (logging to $ITER_LOG)"
-  MODEL_FLAG=""
+
+  SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+  FILTER="$SCRIPT_DIR/stream-filter.sh"
+
+  CLAUDE_ARGS=(
+    --print
+    --verbose
+    --output-format stream-json
+    --dangerously-skip-permissions
+    --disallowedTools "AskUserQuestion"
+  )
   if [[ -n "$MODEL" ]]; then
-    MODEL_FLAG="--model $MODEL"
+    CLAUDE_ARGS+=(--model "$MODEL")
   fi
 
   set +e
   if $QUIET; then
-    claude --print --dangerously-skip-permissions $MODEL_FLAG "$PROMPT" > "$ITER_LOG" 2>&1
+    claude "${CLAUDE_ARGS[@]}" <<< "$PROMPT" > "$ITER_LOG" 2>&1
   else
-    claude --print --dangerously-skip-permissions $MODEL_FLAG "$PROMPT" 2>&1 | tee "$ITER_LOG"
+    claude "${CLAUDE_ARGS[@]}" <<< "$PROMPT" 2>&1 | "$FILTER" "$ITER_LOG"
   fi
   EXIT_CODE=${PIPESTATUS[0]}
   set -e
