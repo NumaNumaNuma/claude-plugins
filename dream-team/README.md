@@ -107,5 +107,4 @@ cp templates/progress.md $SPRINT_DIR/progress.md
 | UI/UX Designer | `general-purpose` | When user-facing |
 | Devil's Advocate | `general-purpose` | Always |
 | Database Architect | `general-purpose` | When DB changes needed |
-| Documentalist | `general-purpose` | For complex features |
 | Test Engineer | `general-purpose` | When tests needed |

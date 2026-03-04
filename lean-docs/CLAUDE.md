@@ -70,30 +70,6 @@ The index format:
 
 This way the agent scans the index to find the right topic file, then reads only that file. Same hierarchy principle as CLAUDE.md → docs/.
 
-## Documentation Hierarchy
+## Full Hierarchy & Setup
 
-```
-CLAUDE.md                    → 80-120 lines, build commands + rules + docs index
-docs/
-  architecture.md            → App structure, patterns, directory layout
-  database.md                → Schema, migrations, key queries
-  api.md                     → Endpoints, auth, error handling
-  testing.md                 → Test patterns, fixtures, gotchas
-  quality-grades.md          → Per-domain quality ratings
-  golden-principles.md       → Mechanical always/never rules + GC cadence
-  gotchas.md                 → Hard-won lessons
-  design-docs/
-    core-beliefs.md          → 5-10 operating principles (the "why")
-  generated/
-    db-schema.md             → Auto-generated schema dump
-  references/
-    [framework]-sdk.md       → Curated SDK patterns (not full API docs)
-src/services/CLAUDE.md       → 10-30 lines, directory-specific rules
-src/components/CLAUDE.md     → 10-30 lines, directory-specific rules
-```
-
-Not every project needs all of these. Create files as they become relevant — don't scaffold empty docs.
-
-## Setup & Audit
-
-Run `/lean-docs` to set up this structure for a new project, or `/lean-docs audit` to check an existing project against the playbook.
+See `skills/lean-docs/SKILL.md` for the complete documentation hierarchy and the 9-step playbook. Run `/lean-docs` for guided setup or `/lean-docs audit` to check an existing project.

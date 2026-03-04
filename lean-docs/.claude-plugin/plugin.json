@@ -1,6 +1,6 @@
 {
   "name": "lean-docs",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Set up agent-legible documentation for any codebase: slim CLAUDE.md, hierarchical docs, subdirectory rules, lint-as-taste, and doc gardening",
   "author": {
     "name": "NumaNumaNuma"

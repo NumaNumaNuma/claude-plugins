@@ -9,31 +9,9 @@ You are planning the feature described above using the Dream Team methodology, b
 
 ## Agent Selection
 
-Review the feature description and decide which of these agents to activate. **You must justify each inclusion/exclusion in a brief sentence before launching.**
+Read `references/agent-roster.md` for the full roster with preferred agents, fallback prompts, and inclusion criteria. **Planning uses all agents including Code Quality Engineer** (the only phase where it's active — `/simplify` replaces it during implementation and review).
 
-### Core Team (select relevant ones)
-
-1. **Code Architect** — **Almost always relevant.** Analyzes architecture, patterns, data flow, component design. Proposes the high-level approach and identifies files/modules affected. Skip only for trivial changes.
-   - Use `feature-dev:code-architect` if available. If the Task tool returns an error about an unknown agent type, retry with `general-purpose` using this prompt: "You are a senior software architect. Analyze the codebase architecture, patterns, data flow, and component design. Propose the high-level approach and identify files/modules affected. Read relevant existing code, docs, and CLAUDE.md files before making recommendations."
-
-2. **Code Quality Engineer** — Relevant when the feature touches existing code patterns, introduces new abstractions, or could create duplication. Evaluates DRY/KISS/YAGNI, module boundaries, and reuse. Important during planning because `/simplify` can't catch design-level quality issues before code exists.
-   - Use `feature-dev:code-reviewer` if available. Fallback prompt: "You are a code quality engineer. Evaluate the proposed changes for DRY/KISS/YAGNI violations, abstraction levels, module boundaries, decoupling, and consistency with existing patterns. Read the codebase conventions before analyzing."
-
-3. **Performance Analyst** — Relevant when the feature involves data fetching, list rendering, real-time updates, caching, or anything with scaling concerns. Skip for purely cosmetic UI changes.
-   - Use `feature-dev:code-explorer` if available. Fallback prompt: "You are a performance analyst. Analyze algorithmic complexity, memory usage, network calls, and potential bottlenecks. Identify scaling concerns and propose optimizations."
-
-4. **Security Reviewer** — Relevant when the feature involves auth, user data, API calls, user input, or permissions. Skip for internal refactors with no security surface.
-   - Use `pr-review-toolkit:silent-failure-hunter` if available. Fallback prompt: "You are a security reviewer. Check for OWASP top 10 vulnerabilities, auth issues, data exposure, silent failures, and inadequate error handling. Focus on security boundaries and trust assumptions."
-
-5. **UI/UX Designer** (`general-purpose`) — Relevant when the feature has user-facing components, interactions, navigation changes, or accessibility implications. Skip for purely backend/infrastructure work.
-
-6. **Devil's Advocate** (`general-purpose`) — **Always include.** Challenges assumptions, proposes alternatives, identifies edge cases and failure modes. Non-negotiable.
-
-### Optional (include only when clearly needed)
-
-7. **Database Architect** (`general-purpose`) — Include when the feature requires new tables, columns, access policies, triggers, or DB functions.
-
-8. **Test Engineer** (`general-purpose`) — Include when the feature has testable logic. Plans what tests to write, identifies affected test files, and specifies expected behavior and coverage strategy. Skip only for trivial changes with no testable logic.
+Review the feature and decide which agents to activate. **Justify each inclusion/exclusion in a brief sentence before launching.** For trivial changes (single-line fixes, typo corrections), skip the full dream-team process and just make the change directly.
 
 ## Workflow
 
@@ -85,8 +63,9 @@ Review the feature description and decide which of these agents to activate. **Y
 
 Present the final plan clearly and ask the user if they'd like to proceed with implementation.
 
-## Sprint Rules (non-negotiable)
+## Sprint Rules
 
-- **NEVER cut, skip, or defer tasks.** Every task in tasks.md is committed scope.
-- **Bug Fix Phase**: Always include in tasks.md. Left empty until manual testing finds bugs. Runner completes all bugs before marking sprint done.
-- **Test plan**: If the sprint includes testable features, create test-plan.md during planning. Never defer test planning to implementation.
+Read `references/sprint-rules.md` for the full non-negotiable sprint rules. Key planning-specific rules:
+- Record plans in `planning/sprints/sprint-N-name/`
+- Create `test-plan.md` during planning if the sprint has testable features
+- Always include a Bug Fix Phase in tasks.md (left empty until manual testing)

@@ -1,16 +1,14 @@
 ---
-description: "Agent-legible documentation setup and auditing for any codebase"
+description: "Agent-legible documentation setup and auditing for any codebase. Use when the user asks to set up docs, audit docs, create CLAUDE.md, organize documentation, or mentions 'lean docs'. Also use when documentation is clearly missing or disorganized in a project the user is working on."
 ---
 
 # Lean Docs Playbook
 
 A step-by-step guide to making any codebase agent-legible. Agents work better with a short stable entry point (~100 lines) that links to deeper docs on demand. Think table of contents, not encyclopedia.
 
-Based on the [harness engineering approach](https://openai.com/index/introducing-codex/).
-
 ---
 
-## Step 1: Slim Down CLAUDE.md (~30 min)
+## Step 1: Slim Down CLAUDE.md
 
 Your CLAUDE.md should only contain what **every** task needs:
 
@@ -46,7 +44,7 @@ Split your old CLAUDE.md content into topic files. Common set:
 
 ---
 
-## Step 3: Subdirectory CLAUDE.md Files (~20 min)
+## Step 3: Subdirectory CLAUDE.md Files
 
 Create a `CLAUDE.md` in each major package/directory with rules specific to that code. Claude Code uses the **closest** CLAUDE.md, so these override/supplement the root.
 
@@ -66,7 +64,7 @@ Keep each one **10-30 lines**. Focus on:
 
 ---
 
-## Step 4: Design Docs & Core Beliefs (~15 min)
+## Step 4: Design Docs & Core Beliefs
 
 ```
 docs/design-docs/
@@ -84,7 +82,7 @@ Examples of core beliefs:
 
 ---
 
-## Step 5: Execution Plans (~10 min)
+## Step 5: Execution Plans
 
 ```
 docs/exec-plans/
@@ -98,7 +96,7 @@ See `references/exec-plan-template.md` for the template.
 
 ---
 
-## Step 6: Golden Principles & GC Process (~15 min)
+## Step 6: Golden Principles & GC Process
 
 `docs/golden-principles.md` — Mechanical rules that prevent codebase drift. These are the "always/never" rules, not the "why" (that's core-beliefs).
 
@@ -112,7 +110,7 @@ Key sections:
 
 ---
 
-## Step 7: Auto-Generated Docs (~20 min)
+## Step 7: Auto-Generated Docs
 
 ```
 docs/generated/
@@ -126,7 +124,7 @@ docs/generated/
 
 ---
 
-## Step 8: LLM-Readable Reference Docs (~30 min)
+## Step 8: LLM-Readable Reference Docs
 
 ```
 docs/references/
@@ -151,50 +149,51 @@ These are **not** copies of official docs. They're curated, minimal references c
 
 ---
 
-## Step 9: Taste Invariants as Lint Rules (~20 min)
+## Step 9: Taste Invariants as Lint Rules
 
 Encode your "taste" (code style preferences) as lint rules with **agent-friendly error messages**. The error message should tell the agent what to do instead.
 
-### ESLint Example
-
-```json
-{
-  "rules": {
-    "no-restricted-imports": ["error", {
-      "patterns": [{
-        "group": ["lodash"],
-        "message": "Use native array methods instead of lodash."
-      }]
-    }]
-  }
-}
-```
-
-### Ruff (Python) Example
-
-```toml
-[tool.ruff.lint]
-select = ["E", "F", "I", "N"]
-[tool.ruff.lint.isort]
-known-first-party = ["myproject"]
-```
-
-### SwiftLint Example
-
-```yaml
-custom_rules:
-  no_combine_import:
-    name: "No Combine"
-    regex: "import Combine"
-    message: "Do not use Combine. Use async/await instead."
-    severity: error
-```
+See `references/lint-examples.md` for examples across ESLint, Ruff, and SwiftLint.
 
 ### Key rules to encode:
 - Banned imports (wrong framework, deprecated libraries)
 - File length limits
 - Function length limits
 - Project-specific patterns
+
+---
+
+## Audit Workflow
+
+When auditing existing docs (e.g., `/lean-docs audit`), scan the project against the 9-step checklist:
+
+1. Read CLAUDE.md — is it under 120 lines? Does it have a docs index?
+2. Check `docs/` — do topic files exist? Are any >400 lines (need splitting)?
+3. Check for subdirectory CLAUDE.md files — are major packages covered?
+4. Check for `docs/design-docs/core-beliefs.md`
+5. Check for execution plan structure
+6. Check for `docs/golden-principles.md` with GC cadence
+7. Check for `docs/generated/` with auto-generated content
+8. Check for `docs/references/` with curated SDK docs
+9. Check for lint config with custom rules
+
+### How to check
+
+Use these concrete steps rather than vague scans:
+- `Read CLAUDE.md` and count lines
+- `Glob "docs/**/*.md"` to find existing topic files
+- `Glob "**/CLAUDE.md"` to find subdirectory CLAUDE.md files
+- `Glob "docs/generated/*"` for auto-generated content
+- `Glob ".swiftlint.yml" or ".eslintrc*" or "ruff.toml"` for lint config
+
+Present results as a table:
+
+| Step | Status | Notes |
+|------|--------|-------|
+| 1. CLAUDE.md | Pass/Needs work | [details] |
+| ... | ... | ... |
+
+Then offer to fix any gaps.
 
 ---
 
@@ -214,9 +213,6 @@ For a new repo, do these in order:
 - [ ] Write 2-3 LLM-readable reference docs for your key dependencies
 - [ ] Add lint rules with agent-friendly messages
 - [ ] Create `docs/quality-grades.md`
-
-**Total time for an existing codebase: ~3 hours**
-**Total time for a new project: ~1-2 hours** (less content to split)
 
 ---
 

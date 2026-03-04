@@ -18,28 +18,9 @@ If resuming a sprint, read `progress.md` FIRST — the CHECKPOINT block has the 
 
 ## Agent Selection
 
-Review the feature description and decide which of these agents to activate. **You must justify each inclusion/exclusion in a brief sentence before launching.**
+Read `references/agent-roster.md` for the full roster with preferred agents, fallback prompts, and inclusion criteria. **Implementation does not use Code Quality Engineer** — `/simplify` (phase 3) handles code quality. Implementation does use Test Engineer to write the tests planned during planning.
 
-### Core Team (select relevant ones)
-
-1. **Code Architect** — **Almost always relevant.** Designs the implementation blueprint: files to create/modify, component boundaries, data flow, and build sequence. Skip only for trivial changes.
-   - Use `feature-dev:code-architect` if available. If the Task tool returns an error about an unknown agent type, retry with `general-purpose` using this prompt: "You are a senior software architect. Design the implementation blueprint: files to create/modify, component boundaries, data flow, and build sequence. Read relevant existing code, docs, and CLAUDE.md files."
-
-2. **Performance Analyst** — Relevant when the feature involves data fetching, list rendering, real-time updates, caching, or anything with scaling concerns.
-   - Use `feature-dev:code-explorer` if available. Fallback prompt: "You are a performance analyst. Analyze the implementation for algorithmic complexity, memory usage, network calls, and bottlenecks."
-
-3. **Security Reviewer** — Relevant when the feature involves auth, user data, API calls, user input, or permissions.
-   - Use `pr-review-toolkit:silent-failure-hunter` if available. Fallback prompt: "You are a security reviewer. Check for OWASP top 10 vulnerabilities, auth issues, data exposure, silent failures, and inadequate error handling."
-
-4. **UI/UX Designer** (`general-purpose`) — Relevant when the feature has user-facing components, interactions, navigation changes, or accessibility implications. Skip for purely backend/infrastructure work.
-
-5. **Devil's Advocate** (`general-purpose`) — **Always include.** Challenges assumptions, proposes alternatives, identifies edge cases and failure modes. Non-negotiable.
-
-### Optional (include only when clearly needed)
-
-6. **Database Architect** (`general-purpose`) — Include when the feature requires new tables, columns, access policies, triggers, or DB functions.
-
-7. **Test Engineer** (`general-purpose`) — Include when the sprint plan includes testable features. Writes the tests identified during planning, verifies coverage. Skip only for trivial changes with no testable logic.
+Review the feature and decide which agents to activate. **Justify each inclusion/exclusion in a brief sentence before launching.** For trivial changes (single-line fixes, typo corrections), skip the full dream-team process and just make the change directly.
 
 ## Workflow
 
@@ -107,9 +88,6 @@ For each bug, follow this TDD workflow:
 3. **VERIFY**: Run the test again — only mark the bug as done when the test passes.
 4. If the bug CANNOT be reproduced as an automated test (purely visual, gesture-based, device interaction), note why in the progress log and apply best-effort fix.
 
-## Sprint Rules (non-negotiable)
+## Sprint Rules
 
-- **NEVER cut, skip, or defer tasks.** Every task in tasks.md is committed scope.
-- **NEVER mark a task as done if the build is broken or tests are failing.**
-- **Work through as many tasks as you can per session.** Do NOT stop after a single task.
-- **Checkpoint after EACH task** so progress survives crashes, then continue to the next task.
+Read `references/sprint-rules.md` for the full non-negotiable sprint rules.

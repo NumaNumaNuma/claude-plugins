@@ -22,32 +22,9 @@ Before launching any review agents, run the `/simplify` skill on the changed cod
 
 ## Agent Selection
 
-Review the changes and decide which of these agents to activate. **You must justify each inclusion/exclusion in a brief sentence before launching.**
+Read `references/agent-roster.md` for the full roster with preferred agents, fallback prompts, and inclusion criteria. **Review does not use Code Quality Engineer** — `/simplify` (step 1) handles code quality. Review does use the on-demand built-in agents (type-design-analyzer, comment-analyzer, pr-test-analyzer) when relevant.
 
-### Core Team (select relevant ones)
-
-1. **Security Reviewer** — Relevant when changes involve auth, user data, API calls, user input, error handling, or permissions. Skip for purely cosmetic changes.
-   - Use `pr-review-toolkit:silent-failure-hunter` if available. Fallback prompt: "You are a security reviewer. Check changes for OWASP top 10 vulnerabilities, auth issues, data exposure, silent failures, and inadequate error handling."
-
-2. **Performance Analyst** — Relevant when changes involve data fetching, loops, list rendering, real-time updates, caching, or queries. Skip for simple UI tweaks or documentation.
-   - Use `feature-dev:code-explorer` if available. Fallback prompt: "You are a performance analyst. Analyze the code changes for algorithmic complexity, memory usage, network calls, and bottlenecks."
-
-3. **UI/UX Designer** (`general-purpose`) — Relevant when changes affect user-facing components, interactions, navigation, or accessibility. Skip for purely backend/infrastructure work.
-
-4. **Devil's Advocate** (`general-purpose`) — **Always include.** Challenges the approach taken, questions whether simpler alternatives exist, identifies edge cases and failure modes, and flags anything that "smells off."
-
-5. **Database Reviewer** (`general-purpose`) — Include when changes involve migrations, access policies, triggers, or DB functions. Should inspect the SQL for correctness and security.
-
-### On-demand built-in agents (include only when clearly needed)
-
-6. **Type/Model Reviewer** — Include when changes introduce or modify types, models, or data structures.
-   - Use `pr-review-toolkit:type-design-analyzer` if available.
-
-7. **Comment Analyzer** — Include when changes add significant documentation or comments.
-   - Use `pr-review-toolkit:comment-analyzer` if available.
-
-8. **Test Analyst** — Include when changes include tests, or when you want to flag missing test coverage.
-   - Use `pr-review-toolkit:pr-test-analyzer` if available.
+Review the changes and decide which agents to activate. **Justify each inclusion/exclusion in a brief sentence before launching.** For trivial changes (single-line fixes, typo corrections), skip the full review process.
 
 ## Workflow
 
