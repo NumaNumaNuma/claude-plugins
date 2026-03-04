@@ -77,4 +77,6 @@ Review the changes and decide which of these agents to activate. **You must just
    - **Ship with fixes** — Minor issues to address, list them
    - **Needs work** — Significant issues, detail what needs to change
 
-8. **Post-fix documentation sweep**: If the verdict was "Ship with fixes" or "Needs work" and the user asks you to fix the issues, run `/lean-docs` AFTER the fixes are applied. Review fixes often surface edge cases, gotchas, and non-obvious behavior — these are the most valuable things to document. This step ensures documentation reflects the final state of the code, not an intermediate one.
+8. **File deferred findings as GitHub issues**: After fixing actionable items, check if the project is a GitHub repository (`gh repo view`). If so, file each skipped/deferred finding as a GitHub issue with the `tech-debt` label (create the label first if it doesn't exist: `gh label create "tech-debt" --description "Code quality and maintenance improvements" --color "fbca04"`). Each issue should include: context (file + line), proposed fix, and which review agent found it. This ensures deferred work is tracked and not lost.
+
+9. **Post-fix documentation sweep**: If the verdict was "Ship with fixes" or "Needs work" and the user asks you to fix the issues, run `/lean-docs` AFTER the fixes are applied. Review fixes often surface edge cases, gotchas, and non-obvious behavior — these are the most valuable things to document. This step ensures documentation reflects the final state of the code, not an intermediate one.
