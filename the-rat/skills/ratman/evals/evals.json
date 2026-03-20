@@ -1,0 +1,125 @@
+{
+  "skill_name": "ratman",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "ok so for the new sharing feature I'm thinking we need: a share dialog with link copying, QR code generation, share-to-social buttons for twitter/facebook/linkedin, short URL generation via our own URL shortener service, analytics tracking on each share, and an embeddable widget. Can you plan this out?",
+      "expected_output": "Should trigger ratman and challenge the scope — QR codes, social buttons, URL shortener, analytics, and embeddable widget are all costume for a sharing feature that just needs a copy-link button",
+      "should_trigger": true
+    },
+    {
+      "id": 2,
+      "prompt": "I want to add a comments section to our product pages. I'm thinking we should use a managed service like Disqus or build our own with threading, replies, upvotes, moderation dashboard, spam filtering, email notifications on replies, and rich text editing",
+      "expected_output": "Should trigger and flag most of this as costume — the pizza is 'users can leave a comment'. Threading, upvotes, moderation dashboard, rich text are all costume. Rat version: a simple text input that saves to a table, maybe with admin delete in the DB directly",
+      "should_trigger": true
+    },
+    {
+      "id": 3,
+      "prompt": "we've been debating internally whether our new project creation flow needs to support templates, AI generation, importing from other tools, and collaborative creation. Is this too much for v1? what should we cut? the team is split on this",
+      "expected_output": "Should trigger — user is explicitly asking about scope and what to cut. Classic rat territory. Should identify the pizza (users can create a project) and classify everything else",
+      "should_trigger": true
+    },
+    {
+      "id": 4,
+      "prompt": "Let me walk you through what we're planning for sprint 5 — it's a user dashboard with real-time updates via websockets, customizable widget layout with drag-and-drop, dark mode support, CSV export of all dashboard data, and integration with 3 third-party analytics providers. We have about 200 users right now.",
+      "expected_output": "Should trigger and flag websockets, drag-and-drop, dark mode, CSV export, and 3 integrations as costume for 200 users. Rat version: a static dashboard page with the key metrics, refresh on page load. Maybe one integration.",
+      "should_trigger": true
+    },
+    {
+      "id": 5,
+      "prompt": "I need to add a simple endpoint that returns the current user's profile data as JSON. It should read from our existing users table and return name, email, and avatar URL",
+      "expected_output": "Should trigger but RATIFY quickly — this is already lean. Score 1-2. No costume to strip.",
+      "should_trigger": true
+    },
+    {
+      "id": 6,
+      "prompt": "our production server is returning 500 errors on the /api/projects endpoint since the last deploy. Looks like a null pointer in the serializer. Can you help me debug this?",
+      "expected_output": "Should NOT trigger — this is a bug fix, not a scope/planning discussion. Ratman reviews plans and scope, not debugging.",
+      "should_trigger": false
+    },
+    {
+      "id": 7,
+      "prompt": "Can you refactor the UserService class to use dependency injection? The tests are really hard to write because everything is tightly coupled to the database. I just need to extract an interface and pass the dependencies through the constructor",
+      "expected_output": "Should NOT trigger — this is a targeted refactor with a clear technical goal, not scope creep or feature planning",
+      "should_trigger": false
+    },
+    {
+      "id": 8,
+      "prompt": "I need to update the copyright year in the footer from 2025 to 2026 across all our pages",
+      "expected_output": "Should NOT trigger — trivial change, no planning or scope to evaluate",
+      "should_trigger": false
+    },
+    {
+      "id": 9,
+      "prompt": "what's the best way to structure a Next.js app with the app router? I want to make sure I'm following best practices for file organization, layouts, and data fetching patterns",
+      "expected_output": "Should NOT trigger — this is about technical patterns and best practices, not about whether to build something or scope a feature",
+      "should_trigger": false
+    },
+    {
+      "id": 10,
+      "prompt": "hey can you dream team plan the new billing system? we need stripe integration, usage-based pricing, invoices, a billing portal, proration on plan changes, team billing, annual discount, free trial management, and a dunning flow for failed payments",
+      "expected_output": "Should trigger as part of dream-team workflow — this is a massive billing plan that's clearly fancy-rat territory for what's likely an early-stage product. Most of this is costume.",
+      "should_trigger": true
+    },
+    {
+      "id": 11,
+      "prompt": "I'm building a CLI tool to automate our deploys. It needs to: check git status, run tests, build the project, push to the registry, update the k8s manifest, apply the manifest, wait for rollout, and send a slack notification. Am I overcomplicating this?",
+      "expected_output": "Should trigger — user is explicitly asking if they're overcomplicating. Ratman should evaluate and probably suggest starting with a bash script that does git push + a webhook.",
+      "should_trigger": true
+    },
+    {
+      "id": 12,
+      "prompt": "the CSS on the signup page is broken in Safari — the flex container isn't wrapping properly and the submit button is hidden below the fold. Here's a screenshot",
+      "expected_output": "Should NOT trigger — this is a CSS bug fix, not a scope discussion",
+      "should_trigger": false
+    },
+    {
+      "id": 13,
+      "prompt": "should we migrate from REST to GraphQL for our API? We have about 15 endpoints right now and the frontend team is complaining about overfetching. We'd need to set up Apollo Server, write all the resolvers, update the frontend queries, add a schema registry, set up persisted queries for performance...",
+      "expected_output": "Should trigger — this is a major scope decision where ratman should challenge whether the full GraphQL migration is needed or if adding a few query parameters to the REST endpoints solves the overfetching problem",
+      "should_trigger": true
+    },
+    {
+      "id": 14,
+      "prompt": "please write unit tests for the calculateDiscount function in src/utils/pricing.ts — it handles percentage discounts, fixed amount discounts, and stacking multiple coupons",
+      "expected_output": "Should NOT trigger — this is a specific testing task, not feature scoping",
+      "should_trigger": false
+    },
+    {
+      "id": 15,
+      "prompt": "I've been thinking about what the minimum version of our mobile app needs to look like. We're a team of 3 and have about 6 weeks. The PM wants push notifications, offline mode, biometric auth, in-app purchases, deep linking, onboarding tutorial, and localization for 5 languages.",
+      "expected_output": "Should trigger strongly — startup team of 3, 6 weeks, and a massive feature list. This is textbook fancy rat. Ratman should help identify the one core feature the app needs and cut everything else.",
+      "should_trigger": true
+    },
+    {
+      "id": 16,
+      "prompt": "can you help me set up ESLint and Prettier for this TypeScript project? I want to use the recommended configs",
+      "expected_output": "Should NOT trigger — tooling setup, not feature scoping",
+      "should_trigger": false
+    },
+    {
+      "id": 17,
+      "prompt": "ok let's ratify the plan we just discussed for the notification system",
+      "expected_output": "Should trigger — explicit /ratify invocation",
+      "should_trigger": true
+    },
+    {
+      "id": 18,
+      "prompt": "how do I connect to a PostgreSQL database from a Next.js API route? I'm using Neon",
+      "expected_output": "Should NOT trigger — this is a 'how do I' technical question, not scope/planning",
+      "should_trigger": false
+    },
+    {
+      "id": 19,
+      "prompt": "we need to rethink our approach to the image upload feature. Right now we're planning: client-side compression, server-side validation, CDN distribution via CloudFront, automatic thumbnail generation in 5 sizes, EXIF data stripping, virus scanning, rate limiting per user, and a gallery view with masonry layout. We only have 30 users.",
+      "expected_output": "Should trigger — 30 users and 8 infrastructure components for image uploads. Classic fancy rat. Rat version: upload to S3, display the image. Done.",
+      "should_trigger": true
+    },
+    {
+      "id": 20,
+      "prompt": "git log shows the last 3 commits broke the auth flow. Can you look at the diff between main and feature/auth-refactor and figure out what went wrong?",
+      "expected_output": "Should NOT trigger — debugging a regression, not scoping a feature",
+      "should_trigger": false
+    }
+  ]
+}

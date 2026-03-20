@@ -59,6 +59,17 @@ Plans test coverage strategy, writes tests, verifies coverage.
 - **When to include**: When the feature has testable logic. Plans coverage during planning, writes tests during implementation.
 - **During review**: The built-in `pr-review-toolkit:pr-test-analyzer` handles test coverage analysis instead.
 
+### Ratman (The Rat Agent)
+Reviews plans and implementations through the Rat philosophy lens — strips over-engineering, identifies the pizza vs the costume, and proposes subway-rat alternatives.
+
+- **Agent**: `general-purpose`
+- **Prompt source**: Read `the-rat/skills/ratman/SKILL.md` for the full Ratman prompt and analysis framework. Also read `the-rat/references/rat-philosophy.md` and `the-rat/references/rat-examples.md` for context.
+- **When to include**: **Always** (when the-rat plugin is installed). Non-negotiable, like Devil's Advocate.
+- **Execution order**: Runs AFTER Devil's Advocate pass, receives the synthesized plan.
+- **Key difference from Devil's Advocate**: Devil's Advocate finds flaws and challenges assumptions. Ratman finds waste and challenges scope. They are complementary, not redundant.
+- **Output**: Rat Score (1-10), verdict (ratified/needs trimming/fancy rat alert), costume items table, subway rat alternative if score > 4.
+- **Escalation**: If Rat Score > 6, the subway rat alternative MUST be presented to the user as a discussion point before proceeding.
+
 ## On-Demand Built-in Agents (review phase only)
 
 These are invoked when clearly relevant, not part of the core team:
