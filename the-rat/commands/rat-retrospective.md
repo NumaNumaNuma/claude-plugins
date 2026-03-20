@@ -20,11 +20,11 @@ Look back at a shipped feature and evaluate it through the Rat lens. The goal is
    - Whether it caused issues post-launch
 
 3. **Score retroactively**: For each component, classify it as it turned out:
-   - **Pizza that delivered** — Users needed it, glad we built it
-   - **Plate that saved us** — Not the core feature, but prevented a bad experience
-   - **Costume that was worth it** — Nice-to-have that actually moved the needle
-   - **Costume that was waste** — Built it, nobody cared
-   - **Missing pizza** — Something we should have built but didn't (users complained or churned)
+   - **Subway rat that delivered** — Users needed it, glad we built it
+   - **Costume rat that saved us** — Not the core feature, but prevented a bad experience
+   - **Fancy rat that was worth it** — Nice-to-have that actually moved the needle
+   - **Fancy rat that was waste** — Built it, nobody cared
+   - **Missing subway rat** — Something we should have built but didn't (users complained or churned)
 
 4. **Extract lessons**: What should the team remember for next time?
    - Which "essential" items turned out to be costume?
@@ -42,7 +42,7 @@ Look back at a shipped feature and evaluate it through the Rat lens. The goal is
 ### Breakdown
 | Component | Original Class | Actual Class | Evidence |
 |-----------|---------------|-------------|----------|
-| ... | Pizza/Plate/Garnish/Costume | Pizza/Plate/Worth it/Waste/Missing | ... |
+| ... | Subway Rat / Costume Rat / Fancy Rat | Delivered / Saved us / Worth it / Waste / Missing | ... |
 
 ### Costume That Was Waste
 [List with rough effort estimate — this is what we'd cut next time]

@@ -46,12 +46,11 @@ Go through every task, component, and piece of infrastructure in the plan. For e
 
 | Classification | Test | Action |
 |---|---|---|
-| **Pizza** | Users literally cannot use the feature without this | Keep it |
-| **Plate** | Not essential, but without it the experience is confusing or broken-feeling enough that users give up | Keep it, but find the cheapest version |
-| **Garnish** | Makes it nicer but users won't notice if it's missing | Cut it. Add a comeback trigger. |
-| **Costume** | This is for us (developers, ops, future-proofing), not for users right now | Cut it. Hard cut. |
+| **Subway Rat** | Users literally cannot use the feature without this. The pizza itself. | Keep it. Ship it dirty. |
+| **Costume Rat** | Not the pizza, but without it the experience is confusing or broken enough that users give up | Keep it, but find the cheapest version |
+| **Fancy Rat** | Nice-to-have, future-proofing, or built for us (developers, ops) rather than users | Cut it. Add a comeback trigger. |
 
-The "plate" category is important — it catches things that aren't the pizza itself but without which the pizza lands on the floor. A login page isn't the pizza, but if users can't get to the pizza without it, it's the plate.
+The "costume rat" category is important — it catches things that aren't the pizza itself but without which the pizza never reaches the user. A login page isn't the pizza, but if users can't get to the pizza without it, it's the costume rat holding the pizza.
 
 ### Step 4: Run the five diagnostics
 
@@ -85,6 +84,31 @@ Flag these if you see them — they're almost always costume:
 - Multiple environments/stages before v1 ships
 - CI/CD pipeline before there's code to ship
 
+### Step 5b: Propose dirty implementations
+
+When building the rat alternative, actively prefer unsustainable, hacky, manual solutions that ship faster. The goal is not to build something that lasts — it's to validate demand. Sustainable solutions are for when you know people want the pizza.
+
+**Instead of → use this rat version:**
+
+| Proper Solution | Rat Version | When to Upgrade |
+|---|---|---|
+| Database | JSON file on disk, or a Google Sheet | > 1000 records or need concurrent writes |
+| Settings/config panel | Hardcoded values, or a JSON file manually edited on the server | Anyone besides you needs to change them |
+| Email service (SendGrid, Resend) | `console.log` the email content + manually send it, or a mailto: link | > 10 emails/day |
+| User authentication | A single shared password, or HTTP basic auth | > 20 users or handling payments |
+| Search | SQL `LIKE '%query%'` or `Array.filter()` | > 10K items or users complain about speed |
+| File upload pipeline | Direct upload to a single S3 bucket, no processing | Need thumbnails or virus scanning |
+| Background job queue | `setTimeout` or a cron that runs a script | Need reliability or > 100 jobs/day |
+| API versioning | Just change the API and update the one client | Multiple external consumers |
+| Caching layer | No cache. If slow, add a static TTL | Measured latency problem |
+| Monitoring/alerting | Check the logs manually. `grep` is monitoring. | Team > 3 or on-call rotation exists |
+| Admin dashboard | SQL queries in a terminal, or Postman | Non-engineers need access |
+| CI/CD pipeline | `git push && ssh server 'git pull && restart'` | Team > 2 or deploys > 3x/day |
+| Feature flags | `if (FEATURE_X) {` hardcoded boolean | Need per-user or gradual rollout |
+| Internationalization | One language. Hardcode all strings. | Confirmed users in another language |
+
+These are not bad engineering — they're correct engineering for the current stage. Every "proper" solution above is a costume until proven otherwise.
+
 ### Step 6: Build the subway rat alternative
 
 If the plan scores above 4, construct a concrete alternative. This isn't a vague "simplify it" — it's a specific, buildable plan:
@@ -116,7 +140,7 @@ If the plan scores above 4, construct a concrete alternative. This isn't a vague
 ### Classification
 | Item | Class | Rationale | Comeback Trigger |
 |------|-------|-----------|------------------|
-| ... | Pizza/Plate/Garnish/Costume | ... | (if cut) ... |
+| ... | Subway Rat / Costume Rat / Fancy Rat | ... | (if cut) ... |
 
 ### The Cut List
 (only if score > 4)

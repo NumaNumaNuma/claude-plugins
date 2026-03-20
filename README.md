@@ -53,12 +53,12 @@ Set up and maintain agent-legible documentation for any codebase.
 Deliver the pizza first, dress up later. The Rat is a coding philosophy for startups that prioritizes shipping over polish.
 
 <p align="center">
-  <img src="the-rat/assets/feature-dev-tiers.jpeg" alt="Feature dev tiers: MVP (subway rat with pizza), Goodboy (dressed up with pizza), Very Fancy (full costume, no pizza)" width="600" />
+  <img src="the-rat/assets/feature-dev-tiers.png" alt="Feature dev tiers: Subway rat (MVP with pizza), Costume rat (dressed up with pizza), Fancy rat (full costume, no pizza)" width="600" />
 </p>
 
 - `/ratify` — Run the Ratman agent on any plan to check if it's lean enough to ship
 - `/rat-retrospective` — Score shipped features retroactively: was the costume worth it?
-- **Ratman agent** — Classifies every item as Pizza (essential), Plate (needed), Garnish (nice-to-have), or Costume (waste). Proposes subway-rat alternatives with time-to-pizza estimates.
+- **Ratman agent** — Classifies every item as Subway Rat (essential), Costume Rat (needed but find the cheapest version), or Fancy Rat (cut it). Proposes subway-rat alternatives with time-to-pizza estimates.
 - **Dream-team integration** — Ratman is a non-negotiable team agent, runs after Devil's Advocate to challenge scope
 - **Rat debt tracker** — Track deferred items with measurable comeback triggers
 

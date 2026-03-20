@@ -50,6 +50,22 @@ SUBWAY RAT -------- GOOD BOY -------- FANCY RAT
 - **Slack (text formatting)**: No bold/italic/underline buttons until 2020. Rat solution: keyboard shortcuts.
 - **League of Legends (Jarvan's R)**: Engine couldn't do round hitboxes efficiently. Rat solution: 16 transparent monsters arranged in a circle for collision.
 
+## The Dirty Implementation Principle
+
+Rat solutions should be intentionally unsustainable. If a solution would make a senior engineer uncomfortable, it's probably the right level for validating an idea. Sustainable = expensive. Unsustainable = cheap. You want cheap until you know people want it.
+
+- A text file on disk is a database
+- A Google Sheet is a CMS
+- SSH + grep is monitoring
+- Postman is an admin panel
+- A hardcoded boolean is a feature flag
+- `console.log` is logging
+- A manually-edited JSON file on the server is a settings panel
+- A shared password is authentication
+- A cron job that runs a bash script is a background job queue
+
+These aren't tech debt — they're correct engineering for unvalidated ideas. Tech debt is when you *know* something needs to scale and you build it to not scale. Rat implementations are when you *don't know* if it needs to exist at all.
+
 ## Anti-Patterns (Signs You're Becoming a Fancy Rat)
 
 - Building an admin dashboard before anyone uses the feature
