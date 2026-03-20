@@ -21,7 +21,7 @@ Look back at a shipped feature and evaluate it through the Rat lens. The goal is
 
 3. **Score retroactively**: For each component, classify it as it turned out:
    - **Subway rat that delivered** — Users needed it, glad we built it
-   - **Costume rat that saved us** — Not the core feature, but prevented a bad experience
+   - **Costume rat that was worth it** — Nice-to-have that actually moved the needle
    - **Fancy rat that was worth it** — Nice-to-have that actually moved the needle
    - **Fancy rat that was waste** — Built it, nobody cared
    - **Missing subway rat** — Something we should have built but didn't (users complained or churned)

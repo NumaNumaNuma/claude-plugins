@@ -47,10 +47,10 @@ Go through every task, component, and piece of infrastructure in the plan. For e
 | Classification | Test | Action |
 |---|---|---|
 | **Subway Rat** | Users literally cannot use the feature without this. The pizza itself. | Keep it. Ship it dirty. |
-| **Costume Rat** | Not the pizza, but without it the experience is confusing or broken enough that users give up | Keep it, but find the cheapest version |
-| **Fancy Rat** | Nice-to-have, future-proofing, or built for us (developers, ops) rather than users | Cut it. Add a comeback trigger. |
+| **Costume Rat** | Makes it nicer, more polished, or easier to use — but users won't die without it | Cut it. Add a comeback trigger. |
+| **Fancy Rat** | Future-proofing, scalability, or built for us (developers, ops) rather than users | Cut it. Hard cut. |
 
-The "costume rat" category is important — it catches things that aren't the pizza itself but without which the pizza never reaches the user. A login page isn't the pizza, but if users can't get to the pizza without it, it's the costume rat holding the pizza.
+Two tiers of "not essential" because the comeback triggers are different: costume rat items come back when users ask for them, fancy rat items come back when engineering needs them (if ever).
 
 ### Step 4: Run the five diagnostics
 

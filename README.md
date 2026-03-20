@@ -58,7 +58,7 @@ Deliver the pizza first, dress up later. The Rat is a coding philosophy for star
 
 - `/ratify` — Run the Ratman agent on any plan to check if it's lean enough to ship
 - `/rat-retrospective` — Score shipped features retroactively: was the costume worth it?
-- **Ratman agent** — Classifies every item as Subway Rat (essential), Costume Rat (needed but find the cheapest version), or Fancy Rat (cut it). Proposes subway-rat alternatives with time-to-pizza estimates.
+- **Ratman agent** — Classifies every item as Subway Rat (essential, ship dirty), Costume Rat (nice-to-have, cut it), or Fancy Rat (future-proofing, hard cut). Proposes subway-rat alternatives with time-to-pizza estimates.
 - **Dream-team integration** — Ratman is a non-negotiable team agent, runs after Devil's Advocate to challenge scope
 - **Rat debt tracker** — Track deferred items with measurable comeback triggers
 
