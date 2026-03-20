@@ -11,6 +11,7 @@ Custom Claude Code plugins for agent-first development workflows.
 # Install plugins
 /plugin install dream-team@numa-plugins
 /plugin install lean-docs@numa-plugins
+/plugin install the-rat@numa-plugins
 ```
 
 ## Setup
@@ -46,6 +47,20 @@ Set up and maintain agent-legible documentation for any codebase.
 - `/lean-docs` — Guided 9-step setup for a new project
 - `/lean-docs audit` — Check existing docs against the playbook
 - **Passive rules** — Automatically enforced when the agent writes or updates docs: slim CLAUDE.md, hierarchical `docs/`, subdirectory CLAUDE.md files, link-don't-duplicate
+
+### the-rat
+
+Deliver the pizza first, dress up later. The Rat is a coding philosophy for startups that prioritizes shipping over polish.
+
+<p align="center">
+  <img src="the-rat/assets/feature-dev-tiers.jpeg" alt="Feature dev tiers: MVP (subway rat with pizza), Goodboy (dressed up with pizza), Very Fancy (full costume, no pizza)" width="600" />
+</p>
+
+- `/ratify` — Run the Ratman agent on any plan to check if it's lean enough to ship
+- `/rat-retrospective` — Score shipped features retroactively: was the costume worth it?
+- **Ratman agent** — Classifies every item as Pizza (essential), Plate (needed), Garnish (nice-to-have), or Costume (waste). Proposes subway-rat alternatives with time-to-pizza estimates.
+- **Dream-team integration** — Ratman is a non-negotiable team agent, runs after Devil's Advocate to challenge scope
+- **Rat debt tracker** — Track deferred items with measurable comeback triggers
 
 ## Recommended Companion Plugins
 
