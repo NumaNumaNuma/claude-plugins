@@ -1,0 +1,527 @@
+<!--
+  RAT RETROSPECTIVE HTML REPORT TEMPLATE
+  =======================================
+  This is the canonical reference template for /rat-retrospective HTML reports.
+  When generating a report, follow this exact structure, CSS, and visual style.
+
+  DYNAMIC VALUES (replace with actual data):
+  - {{PROJECT_NAME}}       — repository/project name (e.g., "go-sense")
+  - {{REPORT_DATE}}        — full date string (e.g., "March 20, 2026")
+  - {{COMMIT_HASH}}        — short commit hash at time of report (e.g., "1f030aa")
+  - {{COMMIT_HASH_FULL}}   — full commit hash for linking
+  - {{VERDICT_TEXT}}        — one-paragraph overall verdict
+  - {{HERO_SUBTITLE}}      — one-sentence description of what was reviewed
+  - {{STATS}}              — 4 key metrics as stat cards
+  - {{COMPONENTS}}         — component cards grouped by classification
+  - {{WASTE_CARDS}}        — waste items with effort estimates
+  - {{MISSING_CARDS}}      — missing subway rats with impact levels
+  - {{LESSONS}}            — numbered lessons with drop-cap styling
+  - {{CALIBRATION}}        — updated rat intuition section
+
+  FILENAME FORMAT:
+  rat-report/YYYY-MM-DD-<short-hash>.html
+  Example: rat-report/2026-03-20-1f030aa.html
+
+  RULES:
+  - Never overwrite existing reports
+  - Always include commit hash and date in footer
+  - Open the report in the browser after writing
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rat Retrospective: {{PROJECT_NAME}} — {{REPORT_DATE}}</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root {
+    --bg: #0e0e10;
+    --surface: #18181b;
+    --surface-2: #1e1e22;
+    --border: #2a2a2e;
+    --text: #e4e4e7;
+    --text-muted: #a1a1aa;
+    --text-dim: #71717a;
+    --accent: #f59e0b;
+    --accent-dim: #92400e;
+    --green: #22c55e;
+    --green-dim: #166534;
+    --red: #ef4444;
+    --red-dim: #991b1b;
+    --blue: #3b82f6;
+    --blue-dim: #1e3a5f;
+    --purple: #a78bfa;
+    --purple-dim: #4c1d95;
+    --orange: #f97316;
+    --pink: #ec4899;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-size: 16px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ===== HERO ===== */
+  .hero {
+    padding: 80px 24px 60px;
+    text-align: center;
+    background: linear-gradient(180deg, #1a1a1e 0%, var(--bg) 100%);
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle at 50% 80%, rgba(245, 158, 11, 0.04) 0%, transparent 50%);
+    pointer-events: none;
+  }
+
+  .hero-rat { font-size: 64px; margin-bottom: 16px; display: block; }
+
+  .hero-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 16px;
+    display: block;
+  }
+
+  .hero h1 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(36px, 5vw, 56px);
+    font-weight: 900;
+    line-height: 1.15;
+    color: #fff;
+    max-width: 700px;
+    margin: 0 auto 20px;
+  }
+
+  .hero h1 em { font-style: italic; color: var(--accent); }
+
+  .hero-subtitle {
+    font-size: 18px;
+    color: var(--text-muted);
+    max-width: 560px;
+    margin: 0 auto 32px;
+    font-weight: 300;
+    line-height: 1.6;
+  }
+
+  .hero-meta {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    flex-wrap: wrap;
+    font-size: 13px;
+    color: var(--text-dim);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .hero-meta span { display: flex; align-items: center; gap: 6px; }
+
+  .container { max-width: 780px; margin: 0 auto; padding: 0 24px; }
+
+  /* ===== VERDICT BANNER ===== */
+  .verdict { margin: 48px auto; max-width: 780px; padding: 0 24px; }
+
+  .verdict-inner {
+    background: linear-gradient(135deg, var(--accent-dim), #78350f);
+    border: 1px solid var(--accent);
+    border-radius: 12px;
+    padding: 32px 36px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .verdict-inner::after {
+    content: '';
+    position: absolute;
+    right: -20px; top: -20px;
+    width: 120px; height: 120px;
+    background: radial-gradient(circle, rgba(245, 158, 11, 0.15) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .verdict-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 10px;
+  }
+
+  .verdict-text {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.4;
+  }
+
+  /* ===== SECTIONS ===== */
+  section { padding: 48px 0; }
+  section + section { border-top: 1px solid var(--border); }
+
+  .section-number {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+
+  h2 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 32px; font-weight: 700; color: #fff;
+    margin-bottom: 24px; line-height: 1.2;
+  }
+
+  h3 {
+    font-family: 'Inter', sans-serif;
+    font-size: 18px; font-weight: 600; color: #fff;
+    margin: 32px 0 12px;
+  }
+
+  p { margin-bottom: 16px; color: var(--text-muted); }
+  p strong { color: var(--text); font-weight: 600; }
+
+  /* ===== STAT GRID ===== */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 16px; margin: 32px 0;
+  }
+
+  .stat {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px; text-align: center;
+  }
+
+  .stat-value {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 32px; font-weight: 700; color: #fff;
+    line-height: 1; margin-bottom: 6px;
+  }
+
+  .stat-label {
+    font-size: 12px; color: var(--text-dim);
+    text-transform: uppercase; letter-spacing: 1px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* ===== COMPONENT CARDS ===== */
+  .component-grid { display: flex; flex-direction: column; gap: 12px; margin: 24px 0; }
+
+  .component {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px 24px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 12px; align-items: start;
+    transition: border-color 0.2s;
+  }
+
+  .component:hover { border-color: #3a3a3e; }
+  .component-name { font-weight: 600; color: #fff; font-size: 15px; margin-bottom: 4px; }
+  .component-loc { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-dim); }
+  .component-evidence { font-size: 14px; color: var(--text-muted); line-height: 1.55; grid-column: 1 / -1; }
+
+  /* ===== BADGES ===== */
+  .badge {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 4px 10px; border-radius: 6px;
+    font-size: 11px; font-weight: 600;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.5px; white-space: nowrap; flex-shrink: 0;
+  }
+
+  .badge-subway { background: var(--green-dim); color: var(--green); border: 1px solid rgba(34, 197, 94, 0.2); }
+  .badge-costume-worth { background: var(--blue-dim); color: var(--blue); border: 1px solid rgba(59, 130, 246, 0.2); }
+  .badge-costume-borderline { background: var(--purple-dim); color: var(--purple); border: 1px solid rgba(167, 139, 250, 0.2); }
+  .badge-waste { background: var(--red-dim); color: var(--red); border: 1px solid rgba(239, 68, 68, 0.2); }
+  .badge-missing { background: #1e1e22; color: var(--orange); border: 1px solid rgba(249, 115, 22, 0.2); }
+  .badges { display: flex; gap: 6px; flex-wrap: wrap; }
+
+  /* ===== WASTE CARDS ===== */
+  .waste-card {
+    background: linear-gradient(135deg, var(--red-dim), #450a0a);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    border-radius: 10px; padding: 24px; margin: 16px 0;
+  }
+
+  .waste-card h4 { color: var(--red); font-size: 16px; font-weight: 600; margin-bottom: 6px; }
+  .waste-card .effort { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: rgba(239, 68, 68, 0.7); margin-bottom: 8px; }
+  .waste-card p { color: #fca5a5; font-size: 14px; margin-bottom: 0; }
+
+  /* ===== MISSING CARDS ===== */
+  .missing-card {
+    background: var(--surface);
+    border-left: 3px solid var(--orange);
+    border-radius: 0 10px 10px 0;
+    padding: 20px 24px; margin: 12px 0;
+  }
+
+  .missing-card h4 { color: #fff; font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+
+  .missing-card .impact {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; letter-spacing: 1px;
+    text-transform: uppercase; margin-bottom: 8px;
+  }
+
+  .impact-high { color: var(--red); }
+  .impact-medium { color: var(--accent); }
+  .impact-low { color: var(--text-dim); }
+  .missing-card p { font-size: 14px; color: var(--text-muted); margin-bottom: 0; }
+
+  /* ===== LESSONS (drop-cap numbers) ===== */
+  .lesson { padding: 28px 0; border-bottom: 1px solid var(--border); }
+  .lesson:last-child { border-bottom: none; }
+
+  .lesson-number {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 48px; font-weight: 900; color: var(--accent);
+    float: left; margin-right: 20px; line-height: 1; margin-top: 2px;
+  }
+
+  .lesson h3 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 20px; margin-top: 0; margin-bottom: 8px;
+  }
+
+  .lesson p { font-size: 15px; margin-bottom: 0; }
+
+  /* ===== CALIBRATION BOX ===== */
+  .calibration {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 32px; margin: 32px 0;
+  }
+
+  .calibration-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; letter-spacing: 3px;
+    text-transform: uppercase; color: var(--accent);
+    margin-bottom: 12px;
+  }
+
+  .calibration h3 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 22px; margin-top: 0; margin-bottom: 16px;
+  }
+
+  .rule-box {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px 24px; margin-top: 20px;
+  }
+
+  .rule-box h4 { color: var(--accent); font-size: 15px; font-weight: 600; margin-bottom: 8px; }
+  .rule-box p { font-size: 14px; margin-bottom: 0; }
+
+  /* ===== PULLQUOTE ===== */
+  .pullquote { border-left: 3px solid var(--accent); padding: 12px 0 12px 24px; margin: 32px 0; }
+
+  .pullquote p {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 22px; font-style: italic; color: #fff;
+    line-height: 1.45; margin-bottom: 0;
+  }
+
+  /* ===== DONUT CHART ===== */
+  .effort-chart { display: flex; gap: 32px; align-items: center; margin: 32px 0; flex-wrap: wrap; }
+  .donut-container { flex-shrink: 0; position: relative; width: 180px; height: 180px; }
+
+  .donut-label {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%); text-align: center;
+  }
+
+  .donut-label .value {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 28px; font-weight: 700; color: #fff; display: block;
+  }
+
+  .donut-label .label {
+    font-size: 11px; color: var(--text-dim);
+    text-transform: uppercase; letter-spacing: 1px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .legend { display: flex; flex-direction: column; gap: 10px; }
+  .legend-item { display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--text-muted); }
+  .legend-dot { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
+
+  /* ===== FOOTER ===== */
+  footer {
+    text-align: center; padding: 48px 24px;
+    border-top: 1px solid var(--border);
+    color: var(--text-dim); font-size: 13px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  footer a { color: var(--accent); text-decoration: none; }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 600px) {
+    .hero { padding: 48px 16px 40px; }
+    .hero h1 { font-size: 28px; }
+    .hero-meta { gap: 16px; font-size: 11px; }
+    .stats { grid-template-columns: repeat(2, 1fr); }
+    .component { grid-template-columns: 1fr; }
+    .badges { margin-top: 8px; }
+    .effort-chart { flex-direction: column; align-items: flex-start; }
+    .lesson-number { font-size: 36px; margin-right: 14px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== HERO ===== -->
+<header class="hero">
+  <span class="hero-rat">&#x1F400;</span>
+  <span class="hero-label">The Rat Retrospective</span>
+  <h1>Was <em>{{PROJECT_NAME}}</em> the Right Kind of Rat?</h1>
+  <p class="hero-subtitle">{{HERO_SUBTITLE}}</p>
+  <div class="hero-meta">
+    <!-- Include 4-6 key stats about the codebase -->
+    <span>{{STAT_1}}</span>
+    <span>{{STAT_2}}</span>
+    <span>{{STAT_3}}</span>
+    <span>{{STAT_4}}</span>
+  </div>
+</header>
+
+<!-- ===== VERDICT ===== -->
+<div class="verdict">
+  <div class="verdict-inner">
+    <div class="verdict-label">The Verdict</div>
+    <div class="verdict-text">{{VERDICT_TEXT}}</div>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- ===== 01: AT A GLANCE ===== -->
+<section>
+  <div class="section-number">01 &mdash; At a Glance</div>
+  <h2>The Numbers Don't Lie</h2>
+  <p>{{PROJECT_DESCRIPTION}}</p>
+
+  <div class="stats">
+    <!-- 4 stat cards with .stat-value and .stat-label -->
+  </div>
+
+  <!-- Optional: effort distribution donut chart -->
+  <h3>Where the Effort Went</h3>
+  <div class="effort-chart">
+    <!-- SVG donut + legend -->
+  </div>
+</section>
+
+<!-- ===== 02: COMPONENT BREAKDOWN ===== -->
+<section>
+  <div class="section-number">02 &mdash; Component Breakdown</div>
+  <h2>Every Rat, Classified</h2>
+
+  <!-- Group components under these headers: -->
+  <h3>Subway Rats &mdash; Delivered Real Value</h3>
+  <div class="component-grid">
+    <!-- Use .badge-subway for each -->
+  </div>
+
+  <h3>Costume That Was Worth It</h3>
+  <div class="component-grid">
+    <!-- Use .badge-costume-worth for each -->
+  </div>
+
+  <h3>Borderline Costume</h3>
+  <div class="component-grid">
+    <!-- Use .badge-costume-borderline for each -->
+  </div>
+</section>
+
+<!-- ===== 03: THE WASTE ===== -->
+<section>
+  <div class="section-number">03 &mdash; The Waste</div>
+  <h2>Costume We'd Cut Next Time</h2>
+
+  <!-- Lead with a pullquote highlighting the most shocking waste stat -->
+  <div class="pullquote">
+    <p>"{{MOST_SHOCKING_WASTE_STAT}}"</p>
+  </div>
+
+  <!-- One .waste-card per waste item -->
+</section>
+
+<!-- ===== 04: MISSING SUBWAY RATS ===== -->
+<section>
+  <div class="section-number">04 &mdash; Missing Subway Rats</div>
+  <h2>Things We Should Have Built</h2>
+  <p>These gaps are more dangerous than anything we over-built.</p>
+
+  <!-- One .missing-card per item, with .impact-high / .impact-medium / .impact-low -->
+</section>
+
+<!-- ===== 05: LESSONS ===== -->
+<section>
+  <div class="section-number">05 &mdash; Lessons</div>
+  <h2>What to Remember Next Time</h2>
+
+  <!-- One .lesson per lesson, with .lesson-number drop-cap -->
+</section>
+
+<!-- ===== 06: CALIBRATION ===== -->
+<section>
+  <div class="section-number">06 &mdash; Calibration</div>
+  <h2>Updated Rat Intuition</h2>
+
+  <div class="calibration">
+    <div class="calibration-title">The Pattern</div>
+    <h3>{{CALIBRATION_HEADLINE}}</h3>
+    <p>{{CALIBRATION_BODY}}</p>
+
+    <!-- Optional: a .rule-box for a concrete recommendation -->
+    <div class="rule-box">
+      <h4>{{RULE_NAME}}</h4>
+      <p>{{RULE_DESCRIPTION}}</p>
+    </div>
+  </div>
+
+  <!-- Optional: closing pullquote -->
+</section>
+</div>
+
+<!-- ===== FOOTER (always include commit + date) ===== -->
+<footer>
+  <p>Rat Retrospective &middot; {{PROJECT_NAME}} &middot; {{REPORT_DATE}}</p>
+  <p style="margin-top: 4px;">Commit: <code>{{COMMIT_HASH}}</code></p>
+  <p style="margin-top: 8px; color: #52525b;">Generated by <a href="#">The Rat</a> &middot; Claude Code plugin</p>
+</footer>
+
+</body>
+</html>

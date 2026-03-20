@@ -23,12 +23,24 @@ Ratman is NOT a replacement for the Devil's Advocate. Devil's Advocate challenge
 ## Commands
 
 - **`/ratify [plan]`** — Run Ratman on a plan, feature, or approach. The core command.
-- **`/rat-retrospective [feature]`** — Score shipped features retroactively. Was the costume worth it? Did we under-build?
+- **`/rat-retrospective [feature]`** — Score shipped features retroactively. Was the costume worth it? Did we under-build? Outputs a styled HTML report.
 
 ## Templates
 
+- **`templates/retrospective-report.html`** — The canonical HTML template for `/rat-retrospective` reports. Magazine-style dark theme with Playfair Display, Inter, and JetBrains Mono. All reports MUST follow this exact visual style. Read this file before generating any retrospective report.
 - **`templates/rat-debt.md`** — Copy to `planning/rat-debt.md` to track cut items and their comeback triggers. Review monthly.
 - **`templates/pizza-receipt.md`** — Fill in when shipping a rat-version feature. Documents what was cut and why.
+
+## Retrospective Reports
+
+All `/rat-retrospective` output MUST be saved as styled HTML reports:
+
+- **Location**: `rat-report/` directory in the repository root
+- **Filename**: `YYYY-MM-DD-<short-commit-hash>.html` (e.g., `rat-report/2026-03-20-1f030aa.html`)
+- **Never overwrite**: If filename exists, append `-2`, `-3`, etc.
+- **Must include**: Current commit hash and exact date in the footer
+- **Open in browser**: Always open the report after saving
+- **Historical**: Multiple reports build a timeline of the team's rat intuition evolution
 
 ## Rat Debt Tracking
 
