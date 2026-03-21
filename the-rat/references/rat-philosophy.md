@@ -34,7 +34,8 @@ SUBWAY RAT -------- GOOD BOY -------- FANCY RAT
 2. **Would users notice?** — If I skip this, will enough end users care, notice, complain, or uninstall?
 3. **My money test** — If this was my money, would I want my team spending time on this right now?
 4. **Cool vs needed** — Am I building this because the business needs it, or because it's technically interesting?
-5. **Spectrum check** — Am I straying too much toward the goodboy rat or the fancy rat?
+5. **Team friction** — Fresh install to running in under 30 minutes. Existing setup to testing a change in a few minutes. If not, something is overengineered.
+6. **Spectrum check** — Am I straying too much toward the goodboy rat or the fancy rat?
 
 ## Real-World Rat Successes
 
@@ -63,8 +64,58 @@ Rat solutions should be intentionally unsustainable. If a solution would make a 
 - A manually-edited JSON file on the server is a settings panel
 - A shared password is authentication
 - A cron job that runs a bash script is a background job queue
+- You clicking through the feature manually is a test suite
+- A Supabase project is your database while you figure out the schema
+- Vercel/Fly.io/Render is your hosting even if the company uses AWS
+- Production is your staging environment when the feature has no existing users
+- Five Jira tasks under an epic is your project plan
 
 These aren't tech debt — they're correct engineering for unvalidated ideas. Tech debt is when you *know* something needs to scale and you build it to not scale. Rat implementations are when you *don't know* if it needs to exist at all.
+
+## Buy Before You Build
+
+Engineers love building things. That's the problem. Before writing a single line of code, ask: does someone already sell this?
+
+A dedicated team working 24/7 on that exact feature will always build something better than a single developer can on the side. Even if it costs money — your time costs money too, and usually more of it. Auth, document parsing, file management, PDF extraction, payments, email — these are solved problems. Use the existing solution.
+
+Build your own only when:
+- Nothing suitable exists
+- It's genuinely too expensive for the current stage
+- It's a tiny utility where the dependency overhead isn't worth it (small glue code is fine — better than managing 45 open-source repos)
+
+You can always replace the off-the-shelf solution later with your own if the feature is validated and the economics make sense.
+
+## Skip the Ceremony for New Features
+
+If the feature is new and no existing users are at risk, skip the process:
+- No feature branches — commit to main
+- No mock databases — use the real thing (or a quick Supabase instance)
+- No staging environment — deploy to prod
+- No heavyweight infra setup — use whatever deploys fastest, even if the company standard is something else
+
+The fastest path to user feedback is the one with the fewest gates between you and production. Non-prod environments exist to protect things people already rely on — not to slow down validation of things nobody has seen yet.
+
+**On company infra vs quick-deploy platforms:** A new Vercel project takes about 10 minutes — that's the bar. If the company's existing infra can match that, use it. Some companies have great tooling where spinning up a new service is genuinely quick and you get monitoring/auth/networking for free. But if "using company infra" means filing a ticket, waiting for a VM, writing Terraform, and setting up a CI pipeline, that's costume. The point isn't "always use Vercel" — it's "always pick the fastest path to deployed and running."
+
+## Don't Over-Spec the Plan
+
+A handful of well-defined tasks under an epic is plenty. Each task should cover a real chunk of work, not an individual input field. Over-speccing creates admin overhead that slows everyone down — managing 20 tickets takes time away from building the pizza.
+
+Write enough detail that someone could pick up the task and know what to do. Don't write so many tasks that managing the board becomes a job in itself.
+
+## Testing at the Rat Stage
+
+At the rat stage, YOU are the test suite. Run it yourself. Click through the happy path. If it works, ship it.
+
+Writing unit tests for unvalidated features is like buying insurance on a pizza you haven't tasted yet. You don't even know if you'll keep selling it. Tests are costume until the pizza is proven.
+
+When to bring tests back:
+- The feature is validated — users want it, it's staying
+- Breakage becomes frequent during development (something keeps breaking the same way)
+- The team grows and manual testing can't keep up
+- The feature handles money, auth, or data that can't be wrong
+
+Until then, a developer doing a manual end-to-end test IS the test.
 
 ## Anti-Patterns (Signs You're Becoming a Fancy Rat)
 
@@ -78,3 +129,12 @@ These aren't tech debt — they're correct engineering for unvalidated ideas. Te
 - Making it configurable when you don't know the config yet
 - Building the "proper" API before validating with a hardcoded prototype
 - Optimizing performance before measuring performance
+- Writing unit tests before the feature is validated
+- A local setup that requires a README to get running
+- Custom internal tools that need their own docs
+- Abstractions that force new devs to read docs before contributing
+- Deploy processes only one person on the team understands
+- Building something yourself when a paid service does it better
+- Setting up staging/non-prod for a feature nobody uses yet
+- Creating 20 Jira tasks when 5 would do
+- Using heavyweight company infra when a quick deploy platform would validate faster

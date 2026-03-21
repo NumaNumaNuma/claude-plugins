@@ -29,6 +29,7 @@ Before evaluating scope, challenge the premise. Ask:
 - **Do we have evidence that users want this?** If not, this is a hypothesis — treat it as one. The plan should be sized to *test the hypothesis*, not to build the final product.
 - **What's the cheapest way to learn if this matters?** Sometimes the answer is a fake door test, a manual process, a Typeform, or just asking 5 users. If you can validate demand without writing code, that's a score of 0/10 — the ultimate rat move.
 - **Is there a simpler existing feature we could extend?** Often the "new feature" is really a tweak to something that already exists.
+- **Is there an off-the-shelf solution?** Before building anything, look for existing products, services, or libraries — even paid ones. Engineers must fight the instinct to roll their own. A dedicated team working 24/7 on that exact functionality will always do a better job than a single developer building it on the side. If an off-the-shelf solution exists and the cost is reasonable, use it. Only build if nothing suitable exists or it's genuinely too expensive. Tiny internal utilities are fine (better than managing 45 open-source deps), but anything with real complexity — document parsing, auth, file management, PDF extraction, payments — should use existing solutions first. You can always replace it with your own later if it becomes worth it.
 
 If the answer to the first question is "no evidence," the verdict is **HOLD — VALIDATE FIRST** and the output is a validation plan, not a build plan.
 
@@ -52,7 +53,7 @@ Go through every task, component, and piece of infrastructure in the plan. For e
 
 Two tiers of "not essential" because the comeback triggers are different: costume rat items come back when users ask for them, fancy rat items come back when engineering needs them (if ever).
 
-### Step 4: Run the five diagnostics
+### Step 4: Run the six diagnostics
 
 For the overall plan (not per-item):
 
@@ -60,7 +61,8 @@ For the overall plan (not per-item):
 2. **Would users notice?** If we cut the garnish and costume items, will enough end users care, notice, complain, or uninstall?
 3. **My money test** — If this was your money, would you pay your team to build all of this before you know if anyone wants the pizza?
 4. **Cool vs needed** — Is any part of this plan here because it's technically interesting rather than because the business needs it?
-5. **Spectrum check** — Where does this land?
+5. **Team friction** — Fresh install to running should take under 30 minutes. If someone already has the project set up, they should be able to test a change on a non-prod environment within a few minutes. If either of those is false, something is overengineered. Complexity that slows teammates down is costume — it doesn't matter how useful a feature is if the rest of the team can't work with it. Watch for: complex local setup, custom tooling that needs docs to use, abstractions that require a README before you can contribute, deploy processes only one person understands.
+6. **Spectrum check** — Where does this land?
 
 ```
 SUBWAY RAT -------- GOOD BOY -------- FANCY RAT
@@ -83,6 +85,16 @@ Flag these if you see them — they're almost always costume:
 - Performance optimization before measuring performance
 - Multiple environments/stages before v1 ships
 - CI/CD pipeline before there's code to ship
+- Unit/integration test suites before the feature is validated (the developer doing a manual e2e test IS the test at this stage)
+- Complex local setup that requires a README just to run the project
+- Custom internal tooling that needs its own documentation to use
+- Abstractions that force other devs to read docs before contributing
+- Deployment processes that only one person understands
+- Onboarding steps that take more than an hour for a new team member
+- Building something yourself when a paid service already does it
+- Setting up staging/non-prod environments for a feature with no existing users
+- Creating 20+ Jira tasks when 5 well-defined ones under an epic would do
+- Using the company's standard heavy infra when a quick Vercel/Supabase/Fly.io deploy would validate faster
 
 ### Step 5b: Propose dirty implementations
 
@@ -106,8 +118,22 @@ When building the rat alternative, actively prefer unsustainable, hacky, manual 
 | CI/CD pipeline | `git push && ssh server 'git pull && restart'` | Team > 2 or deploys > 3x/day |
 | Feature flags | `if (FEATURE_X) {` hardcoded boolean | Need per-user or gradual rollout |
 | Internationalization | One language. Hardcode all strings. | Confirmed users in another language |
+| Unit/integration tests | Developer does a manual e2e test. Click through it yourself. | Breakage becomes frequent, team grows beyond 3, or feature is validated and needs hardening |
+| Company-standard hosting (AWS, GCP) | Whatever deploys fastest — Vercel, Fly.io, Render, or the company's own infra if it's genuinely quick (bar: ~10 min to deployed) | Feature is validated and needs to move to standard infra |
+| Flyway/migration scripts on the real DB | Spin up a Supabase project or use SQLite | Schema is validated and needs to live on the real database |
+| Feature branches + non-prod environments | Deploy straight to prod if it's a new feature with no existing users at risk | Existing users could be affected by changes |
+| 20 Jira tasks with subtasks | A handful of well-defined tasks under one epic. Each task can cover real chunks of work, not individual input fields. | Project grows beyond what fits in your head |
+| Building it yourself | Pay for an off-the-shelf solution (SaaS, library, API). A whole team dedicated to that feature 24/7 will always beat you. | It's genuinely too expensive or nothing suitable exists |
 
 These are not bad engineering — they're correct engineering for the current stage. Every "proper" solution above is a costume until proven otherwise.
+
+**A note on testing:** At the rat stage, YOU are the test suite. Run the feature yourself, click through it, try the happy path. If it works, ship it. Writing unit tests for unvalidated features is like buying insurance on a pizza you haven't tasted yet — you don't even know if you'll keep selling it. Tests come back when the feature is proven and needs to be hardened for production reliability. The only exception: if something is genuinely breaking repeatedly during development and manual testing can't keep up, a targeted test on that specific breakage is justified.
+
+**A note on off-the-shelf:** Engineers love building things. That's the problem. Before writing a single line, search for an existing product, service, or library that solves it. Even if it costs money — your time costs money too, and more of it. A single developer cannot out-build a team whose entire job is that one feature. Use off-the-shelf for anything with real complexity (auth, document parsing, file management, payments, email). Build your own only for small glue code and tiny utilities where the dependency overhead isn't worth it.
+
+**A note on environments:** If the feature is new and no existing users are at risk, skip the ceremony. No feature branches, no mock databases, no staging environments. Deploy to prod. The fastest path to user feedback is the one with the fewest gates between you and production. Non-prod environments are for when a bad deploy could break something people rely on — not for a feature nobody has seen yet.
+
+**A note on infra:** Default to whatever deploys fastest. A new Vercel project takes about 10 minutes — that's the bar. If the company's existing infra can beat that or match it, great, use it. Some companies have excellent tooling where spinning up a new service is genuinely quick, and you get monitoring/auth/networking for free. That's fine — use it. But if "using company infra" means filing a ticket, waiting for a VM, writing Terraform, and setting up a CI pipeline, that's costume. The point isn't "always use Vercel" — it's "always pick the fastest path to deployed and running."
 
 ### Step 6: Build the subway rat alternative
 
@@ -160,7 +186,8 @@ If the plan scores above 4, construct a concrete alternative. This isn't a vague
 2. Users notice? ...
 3. My money? ...
 4. Cool vs needed? ...
-5. Spectrum? ...
+5. Team friction? ...
+6. Spectrum? ...
 ```
 
 ## Verdicts
@@ -179,6 +206,15 @@ When running as part of dream-team:
 - Devil's Advocate finds flaws and challenges assumptions. Ratman finds waste and challenges scope. Different jobs, complementary.
 - If the plan scores > 6, the subway rat alternative MUST be presented as a required discussion point
 - If the plan scores > 8, flag FANCY RAT ALERT — the pizza is at risk of never being delivered
+
+## Retrospective Classification Guidance
+
+When this skill is used by the `/rat-retrospective` command to evaluate shipped code, apply these principles:
+
+- **Zero test coverage on a component is expected and correct at the rat stage.** Do not flag "ZERO TESTS" as a missing subway rat or a negative signal. At the rat stage, the developer doing a manual e2e test IS the test. Lack of tests is not a gap — it's the right engineering choice for unvalidated features.
+- **Missing tests become a concern only after the feature is validated** — meaning users want it, it's staying, and it needs to be hardened for reliability. Until then, tests are costume.
+- **Team friction IS a valid concern to flag.** If the retrospective reveals that a component's complexity slowed down onboarding, made deployments scary, or required tribal knowledge to operate, flag it — even if the feature itself was useful.
+- **"Missing subway rat" items should be things that users complained about or churned over** — not things that would make the codebase more "proper" by engineering standards. Missing tests, missing docs, missing error handling are not missing subway rats. Missing features that users needed ARE.
 
 ## Reference Material
 

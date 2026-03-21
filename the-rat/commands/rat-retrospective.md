@@ -48,6 +48,9 @@ Look back at a shipped feature and evaluate it through the Rat lens. The goal is
    - **Fancy rat that was worth it** — Nice-to-have that actually moved the needle
    - **Fancy rat that was waste** — Built it, nobody cared
    - **Missing subway rat** — Something we should have built but didn't (users complained or churned)
+   - **Team friction** — Something that slowed teammates down (hard to setup, deploy, or iterate on)
+
+   **Important:** Zero test coverage on a component is NOT a negative signal at the rat stage. Do not flag missing tests as a "missing subway rat" or append "ZERO TESTS" badges. At the rat stage, the developer doing a manual e2e test IS the test. Tests come back when the feature is validated and needs hardening. "Missing subway rat" means features users actually needed but didn't get — not engineering niceties like test coverage, error handling, or documentation.
 
 5. **Extract lessons**: What should the team remember for next time?
    - Which "essential" items turned out to be costume?
@@ -79,7 +82,8 @@ Read the template at `templates/retrospective-report.html` (relative to `${CLAUD
 - `.badge-costume-worth` — blue, for nice-to-haves that paid off
 - `.badge-costume-borderline` — purple, for jury-is-out items
 - `.badge-waste` — red, for items that were waste
-- `.badge-missing` — orange, for flags like "ZERO TESTS"
+- `.badge-missing` — orange, for flags like "TEAM FRICTION" or "SLOWS ONBOARDING"
+- Do NOT use badges for missing tests — zero test coverage is expected at the rat stage
 
 ### Footer MUST include:
 ```html
