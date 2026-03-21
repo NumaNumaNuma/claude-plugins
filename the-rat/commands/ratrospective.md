@@ -1,11 +1,13 @@
 ---
 description: "Score shipped features retroactively — was the costume worth it? Did we over-build or under-build?"
-argument-hint: "Feature, commit range, repos, or Jira epic (e.g., 'since abc123', 'repos: go-sense, jig-web', 'JIG-5870', 'this repo')"
+argument-hint: "Commit range, repos, Jira epic, or area (e.g., 'since abc123', 'repos: go-sense, jig-web', 'JIG-5870', 'this repo')"
 ---
 
 # Ratrospective: $ARGUMENTS
 
-Look back at a shipped feature and evaluate it through the Rat lens. The goal is to build institutional memory: learn which costume items actually mattered and which were waste — and surface any rat debt whose comeback triggers have fired.
+Look back at shipped work and evaluate it through the Rat lens. The goal is to build institutional memory: learn which costume items actually mattered and which were waste — and surface any rat debt whose comeback triggers have fired.
+
+**Note:** If the user wants to review a *plan* before code is written, use `/ratify` instead. The ratrospective is for shipped work.
 
 ## Workflow
 

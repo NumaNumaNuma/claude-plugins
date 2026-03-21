@@ -22,7 +22,7 @@ Ratman is NOT a replacement for the Devil's Advocate. Devil's Advocate challenge
 
 ## Commands
 
-- **`/ratify [plan]`** — Run Ratman on a plan, feature, or approach. The core command.
+- **`/ratify [plan]`** — Run Ratman on a plan, feature, or approach. Accepts anything: pasted text, Jira epic (`JIG-5870`), GitHub issue, Slack thread, URL (Notion/Linear/Confluence), local files. Platform-agnostic.
 - **`/ratrospective [feature]`** — Score shipped features retroactively. Was the costume worth it? Did we under-build? Supports single repo, multiple repos (`repos: go-sense, jig-web`), Jira epics (`JIG-5870`), commit ranges, and more. Outputs a styled HTML report with rat debt tracking built in.
 
 ## Templates

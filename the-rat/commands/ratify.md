@@ -1,6 +1,6 @@
 ---
 description: "Run the Rat agent (Ratman) to check if a plan, feature, or approach is lean enough to ship"
-argument-hint: "Plan or feature to ratify (e.g., 'the notification system plan', 'sprint 3 plan')"
+argument-hint: "Plan from anywhere: pasted text, Jira epic (JIG-5870), GitHub issue, Slack thread, URL (Notion/Linear/Confluence), local file, sprint plan"
 ---
 
 # Ratify: $ARGUMENTS
@@ -9,11 +9,19 @@ You are running the Ratman agent to determine if the described plan/feature/appr
 
 ## Workflow
 
-1. **Identify the target**: Determine what needs ratification.
-   - If `$ARGUMENTS` references a sprint plan, read the plan from `planning/sprints/sprint-N-*/plan.md`
-   - If `$ARGUMENTS` references a feature description, use it directly
-   - If `$ARGUMENTS` is empty, check for recent plans in context or ask the user
-   - If there's a current git diff or recent code changes, those can be ratified too
+1. **Identify the target**: Determine what needs ratification. The input is platform-agnostic — accept whatever the user provides and extract the plan from it.
+
+   **Input types** — try to handle whatever is given:
+   - **Pasted text**: User pastes a plan directly in the chat. Use as-is.
+   - **Jira epic/issue** (e.g., `JIG-5870`): Fetch via Jira MCP. Read the epic description and child tasks — each task is a plan item to classify.
+   - **GitHub issue/PR** (e.g., a URL or `#123`): Fetch via `gh` CLI. Read the issue body and comments for the plan.
+   - **Slack thread/channel** (e.g., `#context-platform` or a thread URL): Fetch via Slack MCP. Extract the discussion and proposed work items.
+   - **URL** (Notion, Linear, Confluence, Google Doc, any web page): Fetch the content and extract the plan.
+   - **Local files**: Sprint plans (`planning/sprints/`), PRDs, markdown docs in the repo.
+   - **Current git diff or recent code changes**: Can be ratified too — is the implementation staying lean?
+   - **Empty**: Check for recent plans in context or ask the user.
+
+   If something doesn't work (MCP not available, URL not accessible), say what failed and ask the user to provide the content another way. Don't block on a single input method.
 
 2. **Read the Rat philosophy**: Read `references/rat-philosophy.md` and `references/rat-examples.md` for the full context.
 
@@ -54,7 +62,9 @@ For each component/task in the plan, answer:
 2. If we skip this, will users notice/care/complain?
 3. Would you spend your own money on this right now?
 4. Is this technically cool or actually needed?
-5. What's the dirtiest possible version that still delivers value?
+5. Does this add team friction? (hard to setup/deploy/iterate for other devs?)
+6. What's the dirtiest possible version that still delivers value?
+7. Is there an off-the-shelf solution we should use instead of building this?
 
 OUTPUT FORMAT:
 
@@ -81,7 +91,7 @@ Include:
 - Comeback triggers (when to add the stripped items back)
 
 ### The Diagnostic
-Answer each of the 5 rat questions for the overall plan.
+Answer each of the 6 rat questions for the overall plan.
 ```
 
 ## After Ratification
