@@ -60,7 +60,7 @@ ANALYSIS FRAMEWORK:
 For each component/task in the plan, answer:
 1. Is this the pizza or the costume? (essential for users or nice-to-have?)
 2. If we skip this, will users notice/care/complain?
-3. Would you pay your team to build this before you know if anyone wants it?
+3. If this was your own money, would you pay someone to build it?
 4. Is this technically cool or actually needed?
 5. Does this add team friction? (hard to setup/deploy/iterate for other devs?)
 6. What's the dirtiest possible version that still delivers value?

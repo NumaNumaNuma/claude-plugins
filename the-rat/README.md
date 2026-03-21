@@ -20,7 +20,7 @@ SUBWAY RAT -------- GOOD BOY -------- FANCY RAT
 
 1. Is this essential or nice-to-have?
 2. Would users notice if we cut it?
-3. Would you pay your team to build this before you know if anyone wants it?
+3. If this was your own money, would you pay someone to build it?
 4. Is this cool or actually needed?
 5. Does this slow the rest of the team down? (30min fresh install, minutes to test a change)
 6. Is there an off-the-shelf solution?

@@ -59,7 +59,7 @@ For the overall plan (not per-item):
 
 1. **Essential or nice-to-have?** Is every remaining item required to release and validate demand?
 2. **Would users notice?** If we cut the garnish and costume items, will enough end users care, notice, complain, or uninstall?
-3. **My money test** — If this was your money, would you pay your team to build all of this before you know if anyone wants the pizza?
+3. **My money test** — If this was your own money, would you pay someone to build it?
 4. **Cool vs needed** — Is any part of this plan here because it's technically interesting rather than because the business needs it?
 5. **Team friction** — Fresh install to running should take under 30 minutes. If someone already has the project set up, they should be able to test a change on a non-prod environment within a few minutes. If either of those is false, something is overengineered. Complexity that slows teammates down is costume — it doesn't matter how useful a feature is if the rest of the team can't work with it. Watch for: complex local setup, custom tooling that needs docs to use, abstractions that require a README before you can contribute, deploy processes only one person understands.
 6. **Spectrum check** — Where does this land?

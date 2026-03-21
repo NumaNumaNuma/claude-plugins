@@ -66,7 +66,7 @@ When in doubt, these questions guide everything:
 
 1. Is this essential for releasing and validating that people want this, or is it "nice to have"?
 2. If I don't do this, will enough end users care? notice? complain? uninstall?
-3. If this was my money, would I want my team to spend time on this?
+3. If this was your own money, would you pay someone to build it?
 4. Am I building this because users need it, or because it's technically cool?
 5. Does this complexity slow the rest of the team down?
 6. Am I straying toward the goodboy rat or the fancy rat?
