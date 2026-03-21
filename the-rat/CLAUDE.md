@@ -23,17 +23,16 @@ Ratman is NOT a replacement for the Devil's Advocate. Devil's Advocate challenge
 ## Commands
 
 - **`/ratify [plan]`** — Run Ratman on a plan, feature, or approach. The core command.
-- **`/rat-retrospective [feature]`** — Score shipped features retroactively. Was the costume worth it? Did we under-build? Outputs a styled HTML report.
+- **`/ratrospective [feature]`** — Score shipped features retroactively. Was the costume worth it? Did we under-build? Outputs a styled HTML report with rat debt tracking built in.
 
 ## Templates
 
-- **`templates/retrospective-report.html`** — The canonical HTML template for `/rat-retrospective` reports. Magazine-style dark theme with Playfair Display, Inter, and JetBrains Mono. All reports MUST follow this exact visual style. Read this file before generating any retrospective report.
-- **`templates/rat-debt.md`** — Copy to `planning/rat-debt.md` to track cut items and their comeback triggers. Review monthly.
+- **`templates/retrospective-report.html`** — The canonical HTML template for `/ratrospective` reports. Magazine-style dark theme with Playfair Display, Inter, and JetBrains Mono. All reports MUST follow this exact visual style. Read this file before generating any retrospective report.
 - **`templates/pizza-receipt.md`** — Fill in when shipping a rat-version feature. Documents what was cut and why.
 
-## Retrospective Reports
+## Ratrospective Reports
 
-All `/rat-retrospective` output MUST be saved as styled HTML reports:
+All `/ratrospective` output MUST be saved as styled HTML reports:
 
 - **Location**: `rat-report/` directory in the repository root
 - **Filename**: `YYYY-MM-DD-<short-commit-hash>.html` (e.g., `rat-report/2026-03-20-1f030aa.html`)
@@ -44,12 +43,18 @@ All `/rat-retrospective` output MUST be saved as styled HTML reports:
 
 ## Rat Debt Tracking
 
-When Ratman cuts items from a plan, add them to `planning/rat-debt.md` (create from template if it doesn't exist). This prevents deferred items from being forgotten. Monthly review: promote triggered items, retire untriggered items after 6 months.
+Rat debt is tracked inside the ratrospective report itself — no separate files to maintain. Each ratrospective includes a "Rat Debt Status" section that:
+
+- Lists every costume/fancy item that was cut, with its comeback trigger
+- Checks if triggers have fired (triggered → recommend a task, watching → keep monitoring, retired → 6+ months with no trigger)
+- Carries forward items from previous reports in `rat-report/` for continuity
+
+This replaces the old `planning/rat-debt.md` approach. The ratrospective IS the debt review.
 
 ## When to Activate
 
 - User says "ratify", "rat check", "rat version", "is this too fancy"
-- User runs `/ratify` or `/rat-retrospective`
+- User runs `/ratify` or `/ratrospective`
 - Any plan is produced (automatic)
 - Dream team workflows (as team agent)
 - User asks "should we build this?", "is this MVP enough?", "what should we cut?"
@@ -63,4 +68,5 @@ When in doubt, these questions guide everything:
 2. If I don't do this, will enough end users care? notice? complain? uninstall?
 3. If this was my money, would I want my team to spend time on this?
 4. Am I building this because users need it, or because it's technically cool?
-5. Am I straying toward the goodboy rat or the fancy rat?
+5. Does this complexity slow the rest of the team down?
+6. Am I straying toward the goodboy rat or the fancy rat?

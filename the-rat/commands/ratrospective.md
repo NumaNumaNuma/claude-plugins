@@ -3,9 +3,9 @@ description: "Score shipped features retroactively — was the costume worth it?
 argument-hint: "Feature, commit range, or area (e.g., 'since abc123', 'last 10 commits', 'the billing system', 'this repo')"
 ---
 
-# Rat Retrospective: $ARGUMENTS
+# Ratrospective: $ARGUMENTS
 
-Look back at a shipped feature and evaluate it through the Rat lens. The goal is to build institutional memory: learn which costume items actually mattered and which were waste.
+Look back at a shipped feature and evaluate it through the Rat lens. The goal is to build institutional memory: learn which costume items actually mattered and which were waste — and surface any rat debt whose comeback triggers have fired.
 
 ## Workflow
 
@@ -52,18 +52,23 @@ Look back at a shipped feature and evaluate it through the Rat lens. The goal is
 
    **Important:** Zero test coverage on a component is NOT a negative signal at the rat stage. Do not flag missing tests as a "missing subway rat" or append "ZERO TESTS" badges. At the rat stage, the developer doing a manual e2e test IS the test. Tests come back when the feature is validated and needs hardening. "Missing subway rat" means features users actually needed but didn't get — not engineering niceties like test coverage, error handling, or documentation.
 
-5. **Extract lessons**: What should the team remember for next time?
+5. **Surface rat debt**: For every costume/fancy item that was cut or identified as waste, check if its comeback trigger has fired. This replaces separate debt tracking files — the ratrospective IS the debt review. Categorize each:
+   - **Triggered — time to build**: Evidence shows users need this now. Include as a recommended task.
+   - **Still watching**: No evidence yet. Keep it on the list.
+   - **Retired**: 6+ months with no trigger. Nobody needs it. Remove from future reports.
+
+6. **Extract lessons**: What should the team remember for next time?
    - Which "essential" items turned out to be costume?
    - Which "nice-to-haves" turned out to be critical?
    - Did the team's intuition about what users want improve or worsen?
 
 ## Output: HTML Report
 
-**CRITICAL: All retrospective reports MUST be output as styled HTML files.**
+**CRITICAL: All ratrospective reports MUST be output as styled HTML files.**
 
 Read the template at `templates/retrospective-report.html` (relative to `${CLAUDE_PLUGIN_ROOT}`) for the exact CSS, structure, and visual style to follow. This is the canonical reference — match it precisely.
 
-### Report structure (6 sections):
+### Report structure (8 sections):
 
 1. **Hero** — Project name in `<em>`, subtitle describing what was reviewed, 4-6 key stats in hero-meta
 2. **Verdict banner** — One-paragraph overall assessment in the amber gradient box
@@ -74,8 +79,13 @@ Read the template at `templates/retrospective-report.html` (relative to `${CLAUD
    - Borderline Costume (`.badge-costume-borderline`, purple) — jury's out
    - Waste items get their own section with `.waste-card` (red gradient)
 5. **Missing Subway Rats** — `.missing-card` with orange left border, impact levels (HIGH/MEDIUM/LOW)
-6. **Lessons** — Drop-cap numbered lessons (`.lesson-number`), bold takeaway in each
-7. **Calibration** — Pattern summary + concrete rule recommendation in `.rule-box`
+6. **Rat Debt Status** — For each previously cut item, show its comeback trigger and current status:
+   - **Triggered** (`.badge-triggered`, green border) — evidence shows it's time to build this. Include a concrete task recommendation.
+   - **Watching** (`.badge-watching`, dim/muted) — no evidence yet, keep monitoring
+   - **Retired** (`.badge-retired`, strikethrough) — 6+ months, no trigger, nobody needs it
+   - If previous ratrospective reports exist in `rat-report/`, check them for debt items to track continuity
+7. **Lessons** — Drop-cap numbered lessons (`.lesson-number`), bold takeaway in each
+8. **Calibration** — Pattern summary + concrete rule recommendation in `.rule-box`
 
 ### Badge classes:
 - `.badge-subway` — green, for essential components that delivered
@@ -88,7 +98,7 @@ Read the template at `templates/retrospective-report.html` (relative to `${CLAUD
 ### Footer MUST include:
 ```html
 <footer>
-  <p>Rat Retrospective &middot; {{PROJECT_NAME}} &middot; {{FULL_DATE}}</p>
+  <p>Ratrospective &middot; {{PROJECT_NAME}} &middot; {{FULL_DATE}}</p>
   <p style="margin-top: 4px;">Commit: <code>{{SHORT_COMMIT_HASH}}</code></p>
   <!-- If reviewing a commit range, add the range -->
   <p style="margin-top: 4px;">Range: <code>{{START_HASH}}..{{END_HASH}}</code> ({{N}} commits)</p>
@@ -118,7 +128,3 @@ Examples:
 1. Open the report in the browser (`open <path>` on macOS)
 2. Tell the user the file path so they can find it later
 3. Mention how many previous reports exist in `rat-report/` if any (for historical context)
-
-## Post-report actions
-
-6. **Update rat debt**: If the retrospective reveals deferred items that now have evidence for building, update `planning/rat-debt.md` to reflect the new priority.
