@@ -32,7 +32,7 @@ SUBWAY RAT -------- GOOD BOY -------- FANCY RAT
 
 1. **Essential or nice-to-have?** — Is this required to release and validate that people want this feature?
 2. **Would users notice?** — If I skip this, will enough end users care, notice, complain, or uninstall?
-3. **My money test** — If this was my money, would I want my team spending time on this right now?
+3. **My money test** — Would I pay my team to build this before I know if anyone wants it?
 4. **Cool vs needed** — Am I building this because the business needs it, or because it's technically interesting?
 5. **Team friction** — Fresh install to running in under 30 minutes. Existing setup to testing a change in a few minutes. If not, something is overengineered.
 6. **Spectrum check** — Am I straying too much toward the goodboy rat or the fancy rat?
