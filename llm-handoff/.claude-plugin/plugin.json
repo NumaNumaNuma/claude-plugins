@@ -1,0 +1,11 @@
+{
+  "name": "llm-handoff",
+  "version": "1.0.0",
+  "description": "Generate structured handoff documents to pass work to another LLM with full context.",
+  "author": {
+    "name": "NumaNumaNuma"
+  },
+  "repository": "https://github.com/NumaNumaNuma/claude-plugins",
+  "license": "MIT",
+  "keywords": ["handoff", "context", "transfer", "briefing", "llm"]
+}
