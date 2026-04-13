@@ -175,7 +175,12 @@ This is the flow for `ENTRY_POINT: start`. Each phase: what Claude does, what co
 3. Check for an existing session state: `node "$STATE_SCRIPT" get "$REPO"`. If phase is not `done`/`aborted`/`failed` and a state file exists, refuse with a concurrent-session message (see Section 10).
 4. Verify Codex is available: try `/codex:status` or equivalent. If Codex is missing or unauthenticated, abort and tell the user to run `/codex:setup`.
 5. If `--new-branch [name]` is set: run `git checkout -b <name>`. If the branch already exists, abort (see Section 10).
-6. If `--new-worktree` is set: run `git worktree add <path> -b <name>` and switch into it.
+6. If `--new-worktree` is set: create the worktree at `../<branch-name>` relative to the git root, then switch into it:
+   ```bash
+   WORKTREE_PATH="$(dirname "$REPO_ROOT")/$BRANCH_NAME"
+   git worktree add "$WORKTREE_PATH" -b "$BRANCH_NAME"
+   ```
+   After creation, `cd` into `$WORKTREE_PATH` and update `REPO_ROOT` to this new path. All subsequent operations run inside the new worktree.
 7. Write the initial state file with `phase: preflight` and all resolved flags.
 
 **Commit:** none in this phase.
@@ -194,21 +199,45 @@ This is the flow for `ENTRY_POINT: start`. Each phase: what Claude does, what co
 1. Update state: `{ "phase": "plan" }`.
 2. Invoke `superpowers:brainstorming` with the task description. Let it run its full flow (clarifying questions → propose approaches → design).
 3. When brainstorming hands off to `superpowers:writing-plans`, let that run as well. The result is a spec document written to disk.
-4. Note the spec file path.
+4. Note the spec file path as `SPEC_PATH`.
 
-**Commit:** `spec: <task title>` — commit the spec file immediately after the spec is approved (see gate below).
+**State update (pre-approval):** Immediately after the spec file is on disk and before presenting any gate, persist:
+```bash
+node "$STATE_SCRIPT" update "$REPO_ROOT" '{"phase":"spec_approval","spec_path":"<actual path>"}'
+```
+This ensures that if the session is killed during the approval gate, resume will re-enter at `spec_approval` rather than re-running brainstorming.
+
+**Gate (hybrid):** "Spec ready at `<path>`. Approve and continue to implementation? (y/n/edit)"
+- `y` → commit the spec, then update state (see below).
+- `n` → spec rejection flow (see Section 10).
+- `edit` → open the spec for manual editing; re-read it when the user says "continue", then re-prompt.
+
+**Gate (auto):** auto-approve. Commit the spec. Update state. Proceed.
+
+**Commit:** After approval is granted (or auto-approved), commit only the spec file:
+```bash
+git add "$SPEC_PATH"
+git commit -m "spec: <task title>"
+```
 
 **State update after commit:**
 ```json
 { "phase": "implement", "spec_path": "<path>", "commits": [..., { "phase": "spec", "sha": "<sha>", "message": "spec: <title>" }] }
 ```
 
-**Gate (hybrid):** "Spec ready at `<path>`. Approve and continue to implementation? (y/n/edit)"
-- `y` → commit the spec and proceed.
-- `n` → spec rejection flow (see Section 10).
-- `edit` → open the spec for manual editing; re-read it when the user says "continue", then re-prompt.
+### `--resume-existing-spec` shortcut
 
-**Gate (auto):** auto-approve. Commit the spec. Proceed.
+When the `--resume-existing-spec <path>` flag is set:
+
+- Preflight (Phase 1) runs normally.
+- Phase 2 (Plan) is **skipped entirely** — no brainstorming, no `writing-plans` invocation.
+- The given spec path is used as-is. Do not modify it, do not re-commit it (the spec already exists in git, presumably).
+- Write state directly to `implement`:
+  ```bash
+  node "$STATE_SCRIPT" update "$REPO_ROOT" '{"phase":"implement","spec_path":"<the given path>"}'
+  ```
+- There is **no spec approval gate** — the user opted in by providing the flag; invoking it constitutes approval.
+- Proceed immediately to Phase 3 (Implement) using the referenced spec as input to Codex.
 
 ### Phase 3 — Implement
 
@@ -218,9 +247,7 @@ This is the flow for `ENTRY_POINT: start`. Each phase: what Claude does, what co
 2. Invoke `/codex:rescue --write --background` with a prompt that references the spec file path and instructs Codex to implement exactly per the spec. The `--write` flag is mandatory — Codex must be write-capable. Never invoke `/codex:rescue` without `--write` in this phase.
 3. Capture the Codex job ID from the rescue output. Persist it: `{ "codex_job": { "status": "running", "job_id": "...", "kind": "implement", "started_at": "..." } }`.
 4. Poll `/codex:status` every 30 seconds. While polling, do nothing else — the session must stay open.
-5. Stall detection: if Codex is silent for 10+ minutes with no status change:
-   - **Hybrid:** print a warning and ask "Codex silent for 10min. Wait longer / cancel and retry / abort?"
-   - **Auto:** wait up to 30 minutes total, then cancel-and-retry once. If the second attempt also stalls, fail the phase (see Section 10).
+5. Stall detection: if Codex is silent for 10+ minutes with no status change, invoke the stall handler from Section 10 ("Codex job errors" → sub-mode b).
 6. When Codex reports done: check the diff. If the diff is empty or nonsensical, do not silently proceed — see Codex empty-diff error handling in Section 10.
 7. Run `git add -A && git commit -m "implement: <task title>"`.
 
@@ -330,8 +357,10 @@ State initialization for polish:
 2. Read state: `node "$STATE_SCRIPT" get "$REPO"`. If state is `{}` (no active session), tell the user: "No active session for this repo. Use `/pair-with-codex:start` to begin."
 3. Print the persisted state: current phase, task description, iteration count, commits made so far, elapsed time.
 4. If `codex_job.status == "running"`, reattach to the Codex job via `/codex:status` to check its current status before continuing.
-5. Ask (hybrid): "Resume from phase `<phase>`? (y/n)"
-6. In auto mode, resume immediately without prompting.
+5. **Read mode from state.** Extract `state.mode`. This determines whether to show the resume prompt:
+   - If `mode == "auto"`: skip the resume prompt, reattach to Codex if needed, and continue immediately from the persisted phase.
+   - If `mode == "hybrid"`: show the resume prompt (next step) and proceed on `y`.
+6. Ask (hybrid only): "Resume from phase `<phase>`? (y/n)"
 7. Jump to the persisted phase and continue from there. All state (flags, iteration, commits, spec_path) is read from the state file and honored.
 
 ---
