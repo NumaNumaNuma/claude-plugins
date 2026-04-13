@@ -1,0 +1,8 @@
+{
+  "name": "pair-with-codex",
+  "description": "Orchestrate a Claude + Codex collaborative loop: Claude plans, Codex implements, Claude cleans up, Codex reviews, loop until clean, then commit. Hybrid pauses by default, autonomous mode for overnight runs.",
+  "version": "0.1.0",
+  "author": {
+    "name": "Numa Claude-Codex Flow"
+  }
+}
