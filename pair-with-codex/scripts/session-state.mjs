@@ -5,7 +5,7 @@
 import { createHash } from "node:crypto";
 import { readFileSync, writeFileSync, renameSync, mkdirSync, existsSync, readdirSync, unlinkSync } from "node:fs";
 import { homedir } from "node:os";
-import { dirname, join, resolve } from "node:path";
+import { join, resolve } from "node:path";
 
 const BASE_DIR = join(homedir(), ".claude", "pair-with-codex");
 const SESSIONS_DIR = join(BASE_DIR, "sessions");
@@ -107,12 +107,32 @@ function main(argv) {
       return 0;
     }
     case "set": {
-      const state = JSON.parse(rest[1]);
+      if (rest.length < 2) {
+        process.stderr.write("error: set requires <repo-path> and <json>\n");
+        return 1;
+      }
+      let state;
+      try {
+        state = JSON.parse(rest[1]);
+      } catch (err) {
+        process.stderr.write(`error: invalid JSON: ${err.message}\n`);
+        return 1;
+      }
       writeStateAtomic(rest[0], state);
       return 0;
     }
     case "update": {
-      const patch = JSON.parse(rest[1]);
+      if (rest.length < 2) {
+        process.stderr.write("error: update requires <repo-path> and <json-patch>\n");
+        return 1;
+      }
+      let patch;
+      try {
+        patch = JSON.parse(rest[1]);
+      } catch (err) {
+        process.stderr.write(`error: invalid JSON: ${err.message}\n`);
+        return 1;
+      }
       const current = readState(rest[0]);
       writeStateAtomic(rest[0], mergeState(current, patch));
       return 0;
