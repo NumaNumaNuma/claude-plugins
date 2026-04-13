@@ -22,6 +22,11 @@
       "name": "the-rat",
       "source": "./the-rat",
       "description": "The Rat coding philosophy — deliver the pizza first, dress up later. Ratman agent reviews plans for lean MVP delivery."
+    },
+    {
+      "name": "pair-with-codex",
+      "source": "./pair-with-codex",
+      "description": "Orchestrate a Claude + Codex collaborative loop: Claude plans, Codex implements, Claude cleans up, Codex reviews, loop until clean, then commit. Hybrid pauses by default, autonomous mode for overnight runs."
     }
   ]
 }
