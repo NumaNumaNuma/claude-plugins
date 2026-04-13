@@ -177,10 +177,10 @@ This is the flow for `ENTRY_POINT: start`. Each phase: what Claude does, what co
 5. If `--new-branch [name]` is set: run `git checkout -b <name>`. If the branch already exists, abort (see Section 10).
 6. If `--new-worktree` is set: create the worktree at `../<branch-name>` relative to the git root, then switch into it:
    ```bash
-   WORKTREE_PATH="$(dirname "$REPO_ROOT")/$BRANCH_NAME"
+   WORKTREE_PATH="$(dirname "$REPO")/$BRANCH_NAME"
    git worktree add "$WORKTREE_PATH" -b "$BRANCH_NAME"
    ```
-   After creation, `cd` into `$WORKTREE_PATH` and update `REPO_ROOT` to this new path. All subsequent operations run inside the new worktree.
+   After creation, `cd` into `$WORKTREE_PATH` and update `REPO` to this new path. All subsequent operations run inside the new worktree.
 7. Write the initial state file with `phase: preflight` and all resolved flags.
 
 **Commit:** none in this phase.
@@ -203,7 +203,7 @@ This is the flow for `ENTRY_POINT: start`. Each phase: what Claude does, what co
 
 **State update (pre-approval):** Immediately after the spec file is on disk and before presenting any gate, persist:
 ```bash
-node "$STATE_SCRIPT" update "$REPO_ROOT" '{"phase":"spec_approval","spec_path":"<actual path>"}'
+node "$STATE_SCRIPT" update "$REPO" '{"phase":"spec_approval","spec_path":"<actual path>"}'
 ```
 This ensures that if the session is killed during the approval gate, resume will re-enter at `spec_approval` rather than re-running brainstorming.
 
@@ -234,7 +234,7 @@ When the `--resume-existing-spec <path>` flag is set:
 - The given spec path is used as-is. Do not modify it, do not re-commit it (the spec already exists in git, presumably).
 - Write state directly to `implement`:
   ```bash
-  node "$STATE_SCRIPT" update "$REPO_ROOT" '{"phase":"implement","spec_path":"<the given path>"}'
+  node "$STATE_SCRIPT" update "$REPO" '{"phase":"implement","spec_path":"<the given path>"}'
   ```
 - There is **no spec approval gate** — the user opted in by providing the flag; invoking it constitutes approval.
 - Proceed immediately to Phase 3 (Implement) using the referenced spec as input to Codex.
