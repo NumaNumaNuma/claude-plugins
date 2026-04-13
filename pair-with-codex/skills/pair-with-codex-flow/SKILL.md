@@ -363,6 +363,12 @@ State initialization for polish:
 6. Ask (hybrid only): "Resume from phase `<phase>`? (y/n)"
 7. Jump to the persisted phase and continue from there. All state (flags, iteration, commits, spec_path) is read from the state file and honored.
 
+**Per-phase continuation notes:**
+
+- **If `state.phase == "spec_approval"`:** Read the spec file at `state.spec_path`. Display its contents to the user (or print a clear "spec at `<path>` ready for review" message). Re-present the approval gate from Phase 2: `Approve and continue to implementation? (y/n/edit)`. This mirrors the hybrid-mode behavior from the original run. In auto mode, auto-approve and proceed to implement (but `auto` should never have written `spec_approval` state in the first place — it passes straight through the gate — so this is a defensive note).
+- **If `state.phase == "implement"`, `"cleanup"`, or `"review_loop"`:** Resume the Codex job check or continue the loop iteration from the persisted `state.iteration` value.
+- **If `state.phase == "done"`, `"aborted"`, or `"failed"`:** These are terminal phases. Inform the user the session is already complete and suggest `:start` for a new one.
+
 ---
 
 ## 9. Review Loop — Actionable Finding Classification
@@ -540,10 +546,17 @@ pair-with-codex status
 
 ### Abort (`ENTRY_POINT: abort`)
 
-1. Compute `REPO=$(git rev-parse --show-toplevel)`.
-2. Read state for a summary before clearing.
-3. Run `node "$STATE_SCRIPT" clear "$REPO"` — this deletes the state file only. Git is not touched: any commits already made remain on the branch.
-4. Print:
+**Step 1 — Read state.** Compute `REPO=$(git rev-parse --show-toplevel)`. Call `node "$STATE_SCRIPT" get "$REPO"`.
+
+**Step 2 — No-state guard.** If the state is `{}` (empty), print:
+
+```
+No active pair-with-codex session for this repo. Nothing to abort.
+```
+
+and exit. Do not call `clear`; there is nothing to clear.
+
+**Step 3 — If state exists,** print a summary of what will be cleared:
 
 ```
 Session aborted.
@@ -554,6 +567,15 @@ Session aborted.
     ...
   State file cleared. Run /pair-with-codex:start for a fresh session.
 ```
+
+**Step 4 — Write `aborted` phase, then clear.** Mark the session terminal before deleting, so that if `clear` fails the concurrency guard (which exempts `aborted`) still lets the user start fresh:
+
+```bash
+node "$STATE_SCRIPT" update "$REPO" '{"phase":"aborted"}'
+node "$STATE_SCRIPT" clear "$REPO"
+```
+
+Git is not touched: any commits already made remain on the branch.
 
 ---
 
