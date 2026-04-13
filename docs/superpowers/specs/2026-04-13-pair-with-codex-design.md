@@ -97,13 +97,13 @@ Starts the full flow: preflight → plan → spec approval → implement → cle
 
 **Arguments:**
 
-- Positional: task description (required unless `--resume-existing-spec <path>`)
+- Positional: task description (required unless `--implement-existing-spec <path>`)
 - `--auto` — skip all pause gates, run unattended. Spec is still written and committed.
 - `--allow-dirty` — do not refuse on a dirty working tree
 - `--max-review-rounds N` — override the default of 5
 - `--new-branch [name]` — opt in to branch creation. If `name` is omitted, the branch is auto-named from the task (for example `feature/add-jwt-auth`). If the task mentions a Jira ticket (`JIG-\d+`) the branch follows the `feature/JIG-xxxx-<slug>` pattern.
 - `--new-worktree` — opt in to worktree creation. Implies `--new-branch`.
-- `--resume-existing-spec <path>` — skip brainstorming and start from the implement phase, using the given spec file as input for Codex.
+- `--implement-existing-spec <path>` — skip brainstorming and start from the implement phase, using the given file (superpowers plan, spec, or any implementation guide) as input for Codex.
 
 ### `/pair-with-codex:polish`
 

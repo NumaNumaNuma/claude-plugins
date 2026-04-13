@@ -54,7 +54,7 @@ Parse these from `$ARGUMENTS`:
 | `--max-review-rounds N` | Override the default of 5 review rounds |
 | `--new-branch [name]` | Create a new branch before starting. If `name` is omitted, auto-name from the task (e.g., `feature/add-jwt-auth`). If the task contains a Jira ticket (`JIG-\d+`), use `feature/JIG-xxxx-<slug>` |
 | `--new-worktree` | Create a new git worktree; implies `--new-branch` |
-| `--resume-existing-spec <path>` | Skip brainstorming; use the given file as the spec and jump directly to Phase 3 (implement) |
+| `--implement-existing-spec <path>` | Skip brainstorming; use the given file (spec, plan, or other implementation guide) as Codex's input and jump directly to Phase 3 (implement) |
 
 ### 4.2 Natural-language phrase mapping (Path B — conversational invocation)
 
@@ -67,6 +67,7 @@ When the user does not use a slash command, map these phrases to flags:
 | "new branch", "make a branch", "on a branch" | `--new-branch` |
 | "new worktree", "isolate it" | `--new-worktree` |
 | "up to N rounds", "N reviews max" | `--max-review-rounds N` |
+| "implement this plan/spec at `<path>`", "use this plan `<path>`", "follow this plan `<path>`", "implement the plan at `<path>`", "skip planning, use `<path>`", "run this spec `<path>`" | `--implement-existing-spec <path>` |
 
 ### 4.3 Confirmation before starting
 
@@ -225,9 +226,9 @@ git commit -m "spec: <task title>"
 { "phase": "implement", "spec_path": "<path>", "commits": [..., { "phase": "spec", "sha": "<sha>", "message": "spec: <title>" }] }
 ```
 
-### `--resume-existing-spec` shortcut
+### `--implement-existing-spec` shortcut
 
-When the `--resume-existing-spec <path>` flag is set:
+When the `--implement-existing-spec <path>` flag is set:
 
 - Preflight (Phase 1) runs normally.
 - Phase 2 (Plan) is **skipped entirely** — no brainstorming, no `writing-plans` invocation.

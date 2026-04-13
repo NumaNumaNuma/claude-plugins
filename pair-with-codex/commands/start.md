@@ -1,6 +1,6 @@
 ---
 description: Start the full pair-with-codex flow — brainstorm, spec, Codex implement, cleanup, review loop, done
-argument-hint: "[--auto] [--allow-dirty] [--max-review-rounds N] [--new-branch [name]] [--new-worktree] [--resume-existing-spec <path>] \"task description\""
+argument-hint: "[--auto] [--allow-dirty] [--max-review-rounds N] [--new-branch [name]] [--new-worktree] [--implement-existing-spec <path>] \"task description\""
 allowed-tools: Bash, Edit, Write, Read, Glob, Grep, Skill
 ---
 

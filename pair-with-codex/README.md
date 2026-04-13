@@ -26,7 +26,7 @@ A Claude Code plugin that orchestrates a collaborative workflow between Claude a
 - `--max-review-rounds N` — override the default of 5
 - `--new-branch [name]` — opt in to branch creation (auto-names from task if omitted)
 - `--new-worktree` — opt in to worktree creation (implies `--new-branch`)
-- `--resume-existing-spec <path>` — skip brainstorming, jump straight to Codex implement using the given spec
+- `--implement-existing-spec <path>` — skip brainstorming, jump straight to Codex implement using the given file (works for superpowers plans, specs, or any implementation guide)
 
 You can also trigger the flow in natural conversation: "pair with codex on adding JWT auth, run it overnight on a new branch" — the skill infers flags from the wording.
 
