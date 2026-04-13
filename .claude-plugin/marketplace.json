@@ -27,6 +27,11 @@
       "name": "pair-with-codex",
       "source": "./pair-with-codex",
       "description": "Orchestrate a Claude + Codex collaborative loop: Claude plans, Codex implements, Claude cleans up, Codex reviews, loop until clean, then commit. Hybrid pauses by default, autonomous mode for overnight runs."
+    },
+    {
+      "name": "misc-skills",
+      "source": "./misc-skills",
+      "description": "Miscellaneous utility slash commands. Includes /cleanup — a project-agnostic pipeline that simplifies code, audits tests, runs only changed tests per project rules, and updates docs."
     }
   ]
 }

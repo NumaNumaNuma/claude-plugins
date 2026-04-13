@@ -1,0 +1,11 @@
+{
+  "name": "misc-skills",
+  "version": "0.1.0",
+  "description": "Miscellaneous utility slash commands that don't fit a themed plugin",
+  "author": {
+    "name": "NumaNumaNuma"
+  },
+  "repository": "https://github.com/NumaNumaNuma/claude-plugins",
+  "license": "MIT",
+  "keywords": ["cleanup", "utility", "pipeline"]
+}
