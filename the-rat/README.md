@@ -1,12 +1,17 @@
 # the-rat
 
-**Philosophy:** Deliver the pizza first, dress up later. Ship the dirtiest version that validates demand. Come back and polish only when you know people want it.
+**Philosophy:** Deliver the pizza first, dress up later. The Rat is a coding philosophy for startups that prioritizes shipping over polish — ship the dirtiest version that validates demand, come back and polish only when you know people want it.
 
-## Two commands
+<p align="center">
+  <img src="assets/feature-dev-tiers.png" alt="Feature dev tiers: Subway rat (MVP with pizza), Costume rat (dressed up with pizza), Fancy rat (full costume, no pizza)" width="600" />
+</p>
 
-**`/ratify`** — Before you build. Feed it any plan (paste it, link a Jira epic, Slack thread, Notion doc, whatever) and it scores how fancy you're being on a 1-10 scale. It'll tell you what to cut, what the subway rat version looks like, and when to bring the cut stuff back.
+## Commands and features
 
-**`/ratrospective`** — After you ship. Point it at your repo (or multiple repos, or a Jira epic) and it scores what you actually built. Was the costume worth it? Did you over-build? It also tracks "rat debt" — stuff you intentionally cut — and tells you if it's time to build it now.
+- **`/ratify`** — Before you build. Feed it any plan (paste it, link a Jira epic, Slack thread, Notion doc, whatever) and the Ratman agent scores how fancy you're being on a 1–10 scale. It tells you what to cut, what the subway rat version looks like, and when to bring the cut stuff back.
+- **`/ratrospective`** — After you ship. Point it at your repo (or multiple repos, or a Jira epic) and it scores what you actually built. Was the costume worth it? Did you over-build? Tracks "rat debt" — stuff you intentionally cut — and tells you when it's time to build it.
+- **Ratman agent** — Classifies every item as Subway Rat (essential, ship dirty), Costume Rat (nice-to-have, cut it), or Fancy Rat (future-proofing, hard cut). Proposes subway-rat alternatives with time-to-pizza estimates.
+- **Dream-team integration** — Ratman is a non-negotiable team agent and runs after Devil's Advocate to challenge scope. Any time a plan is produced (including via dream-team), Ratman reviews it automatically — you don't need to remember to run `/ratify`.
 
 ## The scale
 
@@ -33,10 +38,6 @@ SUBWAY RAT -------- GOOD BOY -------- FANCY RAT
 - **Use whatever deploys fastest.** Vercel in 10 min beats filing an AWS ticket. Unless your company infra is genuinely that fast.
 - **Don't over-spec tasks.** 5 chunky Jira tasks under an epic, not 20 tickets for individual fields.
 
-## It runs automatically
-
-Any time a plan is produced (including via dream-team), Ratman reviews it. You don't need to remember to run `/ratify` — it'll flag fancy rats on its own.
-
 ## Install
 
-See the [main README](../README.md#the-rat) for install instructions.
+See the [main README](../README.md) for marketplace install instructions.
