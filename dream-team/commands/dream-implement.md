@@ -5,89 +5,102 @@ argument-hint: "Feature to implement (e.g., 'sprint 5' or 'dark mode support')"
 
 # Dream Implement: $ARGUMENTS
 
-You are implementing the feature described above using the Dream Team methodology, but with **selective agent activation** — only launch agents that are relevant to this specific feature.
+Implement this feature using the Dream Team methodology: quick architect-led scan, implement step-by-step, post-implementation specialist review, test verification, docs sweep. Goal: finished work that's been reviewed and documented, not just code that compiles.
 
-## Step 0: Find the Plan
+## Step 0: Find the plan
 
-First, check if there's an existing sprint plan:
-- If "$ARGUMENTS" references a sprint number, read `planning/sprints/sprint-N-*/progress.md` first (checkpoint has current state)
+Check for an existing sprint plan:
+- If "$ARGUMENTS" references a sprint number, read `planning/sprints/sprint-N-*/progress.md` **first** — the CHECKPOINT block has the exact current state
 - If "$ARGUMENTS" references a plan file, read it
-- If no plan exists, tell the user to run `/dream-plan` first
+- If no plan exists, stop and tell the user to run `/dream-plan` first
 
-If resuming a sprint, read `progress.md` FIRST — the CHECKPOINT block has the exact current state.
+For a resumed sprint, `progress.md` is the source of truth for where you are. Reading the code first and inferring state is how you re-do work that's already done.
 
 ## Agent Selection
 
-Read `references/agent-roster.md` for the full roster with preferred agents, fallback prompts, and inclusion criteria. **Implementation does not use Code Quality Engineer** — `/simplify` (phase 3) handles code quality. Implementation does use Test Engineer to write the tests planned during planning.
+Read `references/agent-roster.md` for the roster. Implementation does **not** use Code Quality Engineer (`/simplify` in Phase 3 owns that). Implementation **does** use Test Engineer to write tests planned during planning.
 
-Review the feature and decide which agents to activate. **Justify each inclusion/exclusion in a brief sentence before launching.** For trivial changes (single-line fixes, typo corrections), skip the full dream-team process and just make the change directly.
+State each agent inclusion/exclusion in one sentence before launching. For trivial changes, skip the whole workflow.
 
-## Workflow
+---
 
-### Phase 1: Quick Architecture Scan
+## Phase 1: Quick Architecture Scan
 
-1. **Select agents**: State which agents you're activating and why (1-2 sentences each). State which you're skipping and why.
+### 1. Launch architect + explorers in parallel
+Before writing any code, launch the Code Architect and any exploration agents in a single turn with `run_in_background: true`. Each prompt includes:
+- Feature description: "$ARGUMENTS"
+- "Explore the codebase, read relevant CLAUDE.md + `docs/` files, produce a concise implementation blueprint: files to create/modify, in what order. No code — plan only. Report only findings, no preamble."
 
-2. **Launch architect + explorer in parallel**: Before implementing, launch the Code Architect and any relevant exploration agents with `run_in_background: true` to understand the codebase and produce a brief implementation blueprint.
+### 2. Synthesise into build order
+Combine agent findings into a concrete ordered list of implementation steps. If specialists disagree on approach, resolve it yourself with a written tradeoff — don't leave ambiguity for your implementation self to rediscover.
 
-   Each agent prompt must include:
-   - The feature description: "$ARGUMENTS"
-   - Instruction to explore the codebase, read relevant files, and produce a concise implementation plan
-   - List of files to create/modify, in what order
-   - Reminder to read relevant existing code, docs, and CLAUDE.md files
-   - "Report only your findings. No preamble, no summaries of what you checked, no restating the task."
+---
 
-3. **Synthesize into build order**: Combine agent findings into a concrete ordered list of implementation steps.
+## Phase 2: Implement
 
-### Phase 2: Implement
+### 3. Build step by step
+Execute the plan yourself — write the actual code, follow existing project patterns, match the style of neighbouring files. Standard build order:
 
-4. **Implement step by step**: Execute the build plan yourself, writing the actual code. Follow existing project patterns and conventions. After each major step, briefly note what was done.
+1. Database changes (migrations, schema, functions)
+2. Model / type changes
+3. Service layer
+4. View / UI
+5. Wire it all together
 
-   - Database changes first (migrations, schema, functions)
-   - Model/type changes next
-   - Service layer changes
-   - View/UI changes last
-   - Wire everything together
+After each major step, note briefly what was done.
 
-5. **Checkpoint after each task**: Update `progress.md` (CHECKPOINT block + log entry) and `tasks.md` (check off completed tasks). This is mandatory — it enables session resumption and the autonomous runner.
+### 4. Checkpoint after each task
+Update `progress.md` (CHECKPOINT block + timestamped log entry) and check off completed items in `tasks.md`. The checkpoint is how a crashed or ended session resumes cleanly — and how the autonomous runner knows what to do next. Skipping checkpoints is how work gets lost or re-done.
 
-### Phase 3: Post-Implementation Review
+---
 
-6. **Run `/simplify`**: Before launching review agents, invoke the `/simplify` skill on the changed code. This automatically reviews and fixes reuse, quality, and efficiency issues — so review agents focus on real problems rather than style nits.
+## Phase 3: Post-Implementation Review
 
-7. **Launch review agents in parallel**: After `/simplify` is done, launch the relevant review agents (Security Reviewer, Performance Analyst, Devil's Advocate) with `run_in_background: true` to review what was built.
+### 5. Run `/simplify`
+Before launching review agents, run `/simplify` on what you wrote. It fixes reuse, quality, and efficiency issues mechanically, so review agents focus on real problems instead of style.
 
-   Each review agent prompt must include:
-   - The feature description: "$ARGUMENTS"
-   - Instruction to review the recently modified files (use `git diff`) for issues from their specialist perspective
-   - Explicit instruction: "Review only. Flag issues with file paths and line numbers."
-   - "Report only your findings. No preamble, no summaries of what you checked, no restating the task."
+### 6. Launch review agents in parallel
+Spawn relevant review agents (Security Reviewer, Performance Analyst, Devil's Advocate) in a single turn with `run_in_background: true`. Each prompt includes:
+- Feature description: "$ARGUMENTS"
+- "Review recently modified files (use `git diff`) from your specialist perspective. Flag issues with severity, file path, line number. Review only — don't write code. Report only findings, no preamble."
 
-8. **Address findings**: Fix any issues flagged by the review agents. For disagreements between agents, use your judgment and note the trade-off.
+### 7. Address findings
+Fix flagged issues. When specialists disagree, make the call yourself and note the tradeoff in the progress log — don't leave a TODO for a later session to rediscover the debate.
 
-### Phase 4: Test Verification
+---
 
-9. **Run existing tests**: Build the project and run the existing test suite using the project's build system. If any tests fail due to the changes, fix them before proceeding. This is non-negotiable — broken tests mean the implementation is incomplete.
+## Phase 4: Test Verification
 
-10. **Write new tests**: If the sprint plan includes a test plan, write the new tests identified during planning.
+### 8. Run the existing test suite
+Build the project and run tests using the project's build system. Failures caused by your changes get fixed before you move on — a passing checkbox on broken tests is worse than no checkbox.
 
-### Phase 5: Documentation Sweep
+### 9. Write planned tests
+If the sprint plan includes a test plan, write those tests now.
 
-Run this phase AFTER review fixes and tests — not before. Review fixes often surface edge cases, gotchas, and non-obvious behavior that are the most valuable things to document.
+---
 
-11. **Run `/lean-docs`**: Invoke the `/lean-docs` skill to audit and update project documentation. This covers `docs/`, subdirectory `CLAUDE.md` files, and `docs/gotchas.md`. It will identify stale or missing documentation based on what changed.
+## Phase 5: Documentation Sweep
 
-12. **Final summary**: Present what was built, any trade-offs made, and any remaining open items. Update `progress.md` with final state.
+This phase runs **after** review fixes and tests, not before. Review fixes surface edge cases, gotchas, and non-obvious behaviour — running docs before means documenting an intermediate state that'll rot within a day.
 
-## Bug Fix Phase (when active_task contains 'Bug Fix' or 'BF-')
+### 10. Run `/lean-docs`
+Invoke `/lean-docs` to audit and update project documentation (`docs/`, subdirectory `CLAUDE.md` files, `docs/gotchas.md`). It'll identify stale or missing docs based on what changed.
+
+### 11. Final summary
+Present what was built, any tradeoffs made, and remaining open items. Update `progress.md` with the final state.
+
+---
+
+## Bug Fix Phase (active_task contains "Bug Fix" or "BF-")
 
 For each bug, follow this TDD workflow:
-1. **REPRODUCE FIRST**: Write a failing test that reproduces the bug. Run it and confirm it fails for the right reason.
-2. **FIX**: Implement a proper, clean fix — not a minimal patch. Same code quality standards as feature work.
-   - If the proper fix requires a large refactor (touching many files or changing architecture), do NOT attempt it. Instead set phase to 'blocked' and describe what refactor is needed.
-3. **VERIFY**: Run the test again — only mark the bug as done when the test passes.
-4. If the bug CANNOT be reproduced as an automated test (purely visual, gesture-based, device interaction), note why in the progress log and apply best-effort fix.
+
+1. **Reproduce first.** Write a failing test that reproduces the bug. Run it, confirm it fails for the right reason (not a typo in the test).
+2. **Fix cleanly.** Implement a proper fix with the same quality bar as feature work — not a minimal patch.
+   - If a proper fix needs a large refactor (many files, architecture change), set `phase: blocked`, describe the refactor needed, and let the user decide. The sprint's job isn't to smuggle in rewrites.
+3. **Verify.** Re-run the test. Mark done only when it passes.
+4. **Unverifiable bugs.** If the bug can't be reproduced as a test (visual, gesture-based, device-specific), note why in the progress log, apply a best-effort fix, mark it. The next manual QA round is the safety net.
 
 ## Sprint Rules
 
-Read `references/sprint-rules.md` for the full non-negotiable sprint rules.
+Read `references/sprint-rules.md` for the full sprint rules.

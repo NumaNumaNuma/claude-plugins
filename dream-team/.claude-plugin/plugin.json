@@ -1,6 +1,6 @@
 {
   "name": "dream-team",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "Multi-agent collaborative workflow for planning, implementing, and reviewing features with autonomous sprint execution",
   "author": {
     "name": "NumaNumaNuma"

@@ -1,22 +1,24 @@
 ---
-description: "Autonomous sprint execution with checkpoint-based progress tracking"
+description: "Autonomous sprint execution with checkpoint-based progress tracking. Use when the user wants unattended/overnight sprint runs, mentions the sprint runner, wants to resume an existing sprint autonomously, or asks to 'keep going' through a sprint that has a planning/sprints/sprint-N directory."
 ---
 
 # Sprint Runner
 
 The sprint runner (`scripts/run-task.sh`) enables autonomous execution of sprint tasks. It reads the checkpoint from `progress.md`, launches Claude with fresh context each iteration, and loops until the sprint is complete or blocked.
 
-## How It Works
+## How it works
 
-1. **Checkpoint loop**: Each iteration reads the `<!-- CHECKPOINT -->` block from `progress.md` to determine current state
-2. **Fresh context**: Claude gets a new session each iteration with only the sprint files as context — this prevents context window exhaustion on long sprints
-3. **Progress tracking**: After each task, the agent updates `progress.md` (checkpoint + log) and `tasks.md` (checkboxes)
-4. **Completion detection**: Runner stops when `phase: done` or `phase: blocked`
-5. **Failure recovery**: If Claude exits with an error, the runner retries (up to 3 consecutive failures)
+The runner exists because long sprints blow out the context window. The loop keeps each iteration cheap and stateless — all persistent state lives in files:
+
+1. **Checkpoint loop** — each iteration reads the `<!-- CHECKPOINT -->` block from `progress.md` to know current state.
+2. **Fresh context** — Claude gets a new session per iteration, loaded only with the sprint files. This prevents context exhaustion on multi-day sprints.
+3. **Progress tracking** — after each task, the agent updates `progress.md` (checkpoint + log) and `tasks.md` (checkboxes).
+4. **Completion detection** — runner stops when `phase: done` or `phase: blocked`.
+5. **Failure recovery** — if Claude exits with an error, the runner retries (up to 3 consecutive failures).
 
 ## Setup
 
-### 1. Create sprint directory
+### 1. Create the sprint directory
 
 ```bash
 SPRINT_DIR=planning/sprints/sprint-N-name
@@ -25,14 +27,14 @@ mkdir -p $SPRINT_DIR
 
 ### 2. Create sprint files from templates
 
-Copy the templates from this plugin's `templates/` directory:
-- `plan.md` — Architecture decisions, phases, risks
-- `tasks.md` — Task checklist with status tracking
-- `progress.md` — Checkpoint block + progress log
+Copy from this plugin's `templates/` directory:
+- `plan.md` — architecture decisions, phases, risks
+- `tasks.md` — task checklist with status tracking
+- `progress.md` — checkpoint block + progress log
 
 ### 3. Fill in the plan
 
-Complete `plan.md` with architecture decisions and phases. Fill in `tasks.md` with all implementation tasks. Initialize `progress.md` with the first checkpoint.
+Complete `plan.md` with architecture decisions and phases. Fill `tasks.md` with all implementation tasks. Initialise `progress.md` with the first checkpoint.
 
 ### 4. Run
 
@@ -40,9 +42,9 @@ Complete `plan.md` with architecture decisions and phases. Fill in `tasks.md` wi
 ./scripts/run-task.sh planning/sprints/sprint-N-name
 ```
 
-## Writing Good Checkpoints
+## Writing good checkpoints
 
-The checkpoint is the ONLY state that persists between runner iterations. Make it precise:
+The checkpoint is the only state that persists between runner iterations. It's a contract with the next iteration's fresh Claude — write it like that Claude is reading it cold.
 
 ```markdown
 <!-- CHECKPOINT
@@ -57,20 +59,21 @@ files_modified: src/models/ThemeConfig.ts
 -->
 ```
 
-- `active_task`: Exact task name from tasks.md
-- `next_step`: Specific enough that a fresh session can start immediately
-- `files_modified`: Every file touched in the current session (helps the next iteration know what to read)
+- `active_task` — exact task name from `tasks.md`.
+- `next_step` — specific enough that a fresh session can start immediately without guessing. "Keep working" is not a next step.
+- `files_modified` — every file touched in the current session so the next iteration knows what to read.
 
 ## Bug Fix Phase
 
-The runner handles bug fixes with a TDD workflow:
-1. Write a failing test that reproduces the bug
-2. Implement the fix
-3. Verify the test passes
-4. If the bug can't be reproduced as a test, note why and apply best-effort fix
+When the active task is a bug, the runner follows TDD:
 
-## Common Issues
+1. Write a failing test that reproduces the bug.
+2. Implement the fix.
+3. Verify the test passes.
+4. If the bug can't be expressed as an automated test (visual, gesture, device-specific), document why and apply a best-effort fix — the next manual QA round is the safety net.
 
-- **Runner stops after one task**: Check that `next_step` in the checkpoint points to the next task, not a vague description
-- **Runner loops on same task**: The checkpoint isn't being updated — check file permissions and that the agent has write access
-- **Build failures cascade**: If a task breaks the build, the runner should checkpoint with the failure and continue in the next iteration with fresh context
+## Common issues
+
+- **Runner stops after one task** — `next_step` in the checkpoint is too vague. Be specific about the next concrete action.
+- **Runner loops on the same task** — the checkpoint isn't being updated. Check file permissions and that the agent has write access to `progress.md`.
+- **Build failures cascade** — if a task breaks the build, checkpoint the failure and continue in the next iteration with fresh context. Trying to debug in the same broken session often makes it worse.

@@ -5,67 +5,61 @@ argument-hint: "Feature to plan (e.g., 'user notifications system')"
 
 # Dream Plan: $ARGUMENTS
 
-You are planning the feature described above using the Dream Team methodology, but with **selective agent activation** — only launch agents that are relevant to this specific feature.
+Plan this feature using the Dream Team methodology — selective specialist agents in parallel, then synthesise. The goal is a plan sharp enough to implement directly, with edge cases and risks surfaced early while they're cheap to address.
 
 ## Agent Selection
 
-Read `references/agent-roster.md` for the full roster with preferred agents, fallback prompts, and inclusion criteria. **Planning uses all agents including Code Quality Engineer** (the only phase where it's active — `/simplify` replaces it during implementation and review).
+Read `references/agent-roster.md` for the roster, fallback prompts, and per-agent inclusion criteria. Planning is the one phase where **Code Quality Engineer is active** — `/simplify` replaces it during implementation and review.
 
-Review the feature and decide which agents to activate. **Justify each inclusion/exclusion in a brief sentence before launching.** For trivial changes (single-line fixes, typo corrections), skip the full dream-team process and just make the change directly.
+Decide which agents to activate. State each inclusion/exclusion in one sentence before launching. For genuinely trivial changes (one-line fix, typo, obvious rename), skip the whole process and just make the change — spinning up five specialists for a typo is how the workflow earns a bad reputation.
 
 ## Workflow
 
-1. **Select agents**: State which agents you're activating and why (1-2 sentences each). State which you're skipping and why.
+### 1. Select agents
+State which agents you're activating and why (one sentence each). State which you're skipping and why. Decisive exclusions matter as much as inclusions — a pure migration doesn't need UI/UX.
 
-2. **Launch in parallel**: Launch all selected agents simultaneously using the Task tool with `run_in_background: true`. Each agent receives the full feature description and is told to focus on **planning only** — no implementation.
+### 2. Launch in parallel
+Spawn all selected agents in a single turn with `run_in_background: true`. Each prompt includes:
+- The feature description: "$ARGUMENTS"
+- Their specialist focus and explicit anti-focus (another agent owns X, Y)
+- "Explore the codebase and read relevant CLAUDE.md + docs first. Output a plan/analysis only, no code. Report only your findings — no preamble, no summaries of what you checked, no restating the task."
 
-   Each agent prompt must include:
-   - The feature description: "$ARGUMENTS"
-   - Instruction to explore the codebase and produce a planning analysis from their specialist perspective
-   - Reminder to read relevant existing code, docs, and CLAUDE.md files before making recommendations
-   - Explicit instruction: "Output a plan/analysis only. Do not write any code."
-   - "Report only your findings. No preamble, no summaries of what you checked, no restating the task."
+### 3. Synthesise
+When agents return, combine their findings into a unified plan that surfaces:
+- **Agreement** — where specialists converge, you have high confidence
+- **Tensions** — where they conflict, the user needs to weigh in (or you make an explicit tradeoff)
+- **Open questions** — gaps that need user input before implementation
 
-3. **Synthesize**: After all agents return, combine their findings into a unified plan. Highlight:
-   - Points of agreement across agents
-   - Conflicts or tensions between recommendations
-   - Open questions that need user input
+Never paste raw agent output. Synthesise into tight, decision-ready prose.
 
-4. **Devil's Advocate pass**: Resume the Devil's Advocate agent with the synthesis for a final challenge. Address every objection — either incorporate it or explain why it's dismissed.
+### 4. Devil's Advocate pass
+Resume the Devil's Advocate with the synthesis and ask for a final challenge. Address every objection — either incorporate it or explain why it's dismissed. A dismissed objection without reasoning is a skipped objection.
 
-5. **Edge case sweep**: Review the plan yourself with fresh eyes and specifically hunt for missed edge cases. For each component in the plan, ask:
-   - What happens on first use? (empty states, no data, new user)
-   - What happens at scale? (1000+ items, concurrent users, large payloads)
-   - What happens on failure? (network down, timeout, partial write, auth expired)
-   - What happens with bad input? (empty strings, nulls, duplicates, special characters)
-   - What happens out of order? (race conditions, double-taps, stale data, back navigation)
-   - What happens on different devices/contexts? (small screens, offline, background/foreground transitions)
+### 5. Edge case sweep
+Walk the plan with a specific lens: what breaks this? For each component, think through:
+- First use (empty states, no data, brand new user)
+- Scale (many items, concurrent users, large payloads)
+- Failure (network down, timeout, partial write, auth expired)
+- Bad input (empty, null, duplicate, special characters, wrong type)
+- Ordering (race conditions, double-submit, stale data, back nav)
+- Context (small screens, offline, backgrounded, returning from deep link)
 
-   Add any newly discovered edge cases to the plan. If an edge case would require a new task, add it. If it's a risk, add it to the risks table.
+Add newly discovered edge cases to the plan. If an edge case needs its own task, add it. If it's a risk worth tracking, add it to the risks table.
 
-6. **Create sprint directory**: Save the plan to the project's planning directory:
-   ```
-   planning/sprints/sprint-N-name/
-   ├── plan.md         — Copy from templates/sprint-plan.md, fill in architecture decisions
-   ├── tasks.md        — Copy from templates/tasks.md, fill in implementation tasks
-   ├── progress.md     — Copy from templates/progress.md, initialize checkpoint
-   └── test-plan.md    — What to test (if Test Engineer was activated)
-   ```
-   Use the templates from this plugin's `templates/` directory as starting points.
+### 6. Create the sprint directory
+Save the plan into the project:
 
-7. **Final plan**: Present the consolidated implementation plan with:
-   - Architecture decisions (with rationale)
-   - Files to create/modify
-   - Database changes (if any)
-   - Implementation sequence (what to build first)
-   - Edge cases and risks identified
-   - Open questions for the user
+```
+planning/sprints/sprint-N-name/
+├── plan.md         — Architecture decisions (use templates/sprint-plan.md)
+├── tasks.md        — Implementation tasks (use templates/tasks.md)
+├── progress.md     — Initialised checkpoint (use templates/progress.md)
+└── test-plan.md    — What to test (if Test Engineer was activated)
+```
 
-Present the final plan clearly and ask the user if they'd like to proceed with implementation.
+### 7. Present the plan
+Show the user the consolidated plan: architecture decisions with rationale, files to create/modify, database changes, implementation sequence, edge cases, risks, open questions. Ask if they'd like to proceed with implementation.
 
 ## Sprint Rules
 
-Read `references/sprint-rules.md` for the full non-negotiable sprint rules. Key planning-specific rules:
-- Record plans in `planning/sprints/sprint-N-name/`
-- Create `test-plan.md` during planning if the sprint has testable features
-- Always include a Bug Fix Phase in tasks.md (left empty until manual testing)
+Read `references/sprint-rules.md` for the full sprint rules. Planning-specific: plan lives in `planning/sprints/`, `test-plan.md` is written during planning (not deferred), `tasks.md` always includes a Bug Fix Phase.
